@@ -1,7 +1,4 @@
 # FactoryLocator
-
-<h1>Description</h1>
-<br>
 <br>
 This project is responsible for processing large amounts of data, (such as pizza order locations and traffic data) in order to determine the ideal location for a new pizza factory.
 <br>

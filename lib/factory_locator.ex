@@ -80,7 +80,7 @@ defmodule FactoryLocator do
     result = [lat * 180 / :math.pi(), lon * 180 / :math.pi()]
     {:ok, result_json} = Jason.encode(result)
     File.write(@result_file, result_json)
-    result_json
+    result
   end
 
   # Limits the amount of running processes in order to prevent the host machine from crashing.

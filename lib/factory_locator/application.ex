@@ -35,7 +35,7 @@ defmodule FactoryLocator.Application do
     {:ok, config} = File.read(@config_directory)
     {:ok, config} = config |> String.replace("\n", "") |> Jason.decode()
 
-    Config.constructor(
+    Configuration.constructor(
       config["mongo_address"],
       config["mongo_username"],
       config["mongo_password"],
@@ -63,16 +63,17 @@ defmodule FactoryLocator.Application do
              is_bitstring(latitude_field) and
              is_bitstring(longitude_field) do
     {:ok, config} =
-      Jason.encode(%{
-        :mongo_address => mongo_address,
-        :mongo_username => mongo_username,
-        :mongo_password => mongo_password,
-        :mongo_port => mongo_port,
-        :order_collection => order_collection,
-        :latitude_field => latitude_field,
-        :longitude_field => longitude_field
-      })
+      Configuration.constructor(
+        mongo_address,
+        mongo_username,
+        mongo_password,
+        mongo_port,
+        order_collection,
+        latitude_field,
+        longitude_field
+      )
 
-    File.write!(@config_directory, config)
+    {:ok, config} = Map.from_struct(config) |> Jason.encode()
+    File.write(@config_directory, config)
   end
 end

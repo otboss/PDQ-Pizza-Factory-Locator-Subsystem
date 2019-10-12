@@ -1,4 +1,4 @@
-defmodule Config do
+defmodule Configuration do
   defstruct mongo_address: nil,
             mongo_username: nil,
             mongo_password: nil,
@@ -19,12 +19,12 @@ defmodule Config do
       when is_bitstring(mongo_address) and
              is_bitstring(mongo_username) and
              is_bitstring(mongo_password) and
-             is_bitstring(mongo_port) and
+             is_integer(mongo_port) and
              is_bitstring(order_collection) and
              is_bitstring(latitude_field) and
              is_bitstring(longitude_field) do
     {:ok,
-     %Config{
+     %Configuration{
        :mongo_address => mongo_address,
        :mongo_username => mongo_username,
        :mongo_password => mongo_password,

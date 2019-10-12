@@ -1,7 +1,7 @@
 {application,factory_locator,
              [{applications,[kernel,stdlib,elixir,logger,jason,mongodb]},
               {description,"factory_locator"},
-              {modules,['Elixir.Config','Elixir.Coordinates',
+              {modules,['Elixir.Configuration','Elixir.Coordinates',
                         'Elixir.Database','Elixir.FactoryLocator',
                         'Elixir.FactoryLocator.Application','Elixir.Order']},
               {registered,[]},

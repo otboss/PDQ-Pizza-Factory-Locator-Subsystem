@@ -1,7 +1,12 @@
 defmodule FactoryLocator do
   @moduledoc """
-
+  Module containing the main functionality of the project, that is the
+  "determine_new_factory_location" function. This function should be exposed
+  via a command-line API at deployment so that it can be intergrated into other
+  projects
   """
+
+  # The number of processes upon virtual machine boot
   @base_process_count Process.list() |> length()
   # Set the process limit based on the max available resources of the host machine
   @process_limit 1000
@@ -12,7 +17,8 @@ defmodule FactoryLocator do
   Parses large order and traffic dataset stored in the database to calculate
   the best location for a new pizza factory using as much of the host machine's
   resources as possible. A version of this function in the future will account
-  for road traffic during operating hours. Visit the following url for assistance:
+  for road traffic during operating hours. Visit the following url for
+  mathematical assistance:
   https://stackoverflow.com/questions/6671183/calculate-the-center-point-of-multiple-latitude-longitude-coordinate-pairs
   """
   def determine_new_factory_location do
@@ -37,6 +43,9 @@ defmodule FactoryLocator do
 
       Enum.each(orders, fn order ->
         spawn(fn ->
+          # Generates and stores a random integer globally. It is very unlikely that
+          # the same number will repeat. If "new_value" remains unchanged after x seconds
+          # then the program will assume that all orders have been processed and finalize
           :ets.insert(
             :buckets_registry,
             {"new_value", Enum.random(1..1_000_000_000_000_000_000_000_000_000)}
@@ -66,7 +75,7 @@ defmodule FactoryLocator do
 
     # Since all the functions are being processed asynchronously a function
     # will be needed to pause until all orders have been processed.
-    # This function call pauses the return until all locations have been processed.
+    # This function call pauses the return until all orders have been processed.
     checker()
 
     order_cnt = Database.get_order_count()
@@ -100,13 +109,15 @@ defmodule FactoryLocator do
 
     old_value == new_value ||
       (
-        Process.sleep(1000)
+        Process.sleep(2000)
 
         :ets.insert(
           :buckets_registry,
           {"old_value", :ets.lookup(:buckets_registry, new_value)}
         )
 
+        # Loop until "new_value" is unchanged. If this is the case then the processing
+        # is complete.
         checker()
       )
   end

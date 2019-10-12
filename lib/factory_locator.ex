@@ -10,6 +10,8 @@ defmodule FactoryLocator do
   @base_process_count Process.list() |> length()
   # Set the process limit based on the max available resources of the host machine
   @process_limit 1000
+  # Set the chunk size based on the available RAM of the host machine
+  @chunk_size 1000
   @result_file "./output/final_result.json"
   @config FactoryLocator.Application.get_config() |> elem(1)
   @new_value "new_value"
@@ -26,9 +28,8 @@ defmodule FactoryLocator do
   """
   def determine_new_factory_location do
     order_cnt = Database.get_order_count()
-    chunk_size = 1000
 
-    chunks = (order_cnt / chunk_size) |> ceil()
+    chunks = (order_cnt / @chunk_size) |> ceil()
 
     :ets.new(:buckets_registry, [:named_table])
 
@@ -46,7 +47,7 @@ defmodule FactoryLocator do
     end)
 
     Enum.each(0..chunks, fn x ->
-      orders = Database.get_orders(chunk_size * x, chunk_size * x + chunk_size)
+      orders = Database.get_orders(@chunk_size * x, @chunk_size * x + @chunk_size)
 
       Enum.each(orders, fn order ->
         spawn(fn ->

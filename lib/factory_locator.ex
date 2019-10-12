@@ -6,7 +6,7 @@ defmodule FactoryLocator do
   # Set the process limit based on the max available resources of the host machine
   @process_limit 1000
   @result_file "./output/final_result.json"
-  @config FactoryLocator.Application.get_config()
+  @config FactoryLocator.Application.get_config() |> elem(1)
 
   @doc """
   Parses large order and traffic dataset stored in the database to calculate

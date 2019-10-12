@@ -8,7 +8,7 @@ defmodule FactoryLocator.Application do
   @config_directory "./config/config.json"
 
   def start(_type, _args) do
-    config = get_config()
+    {:ok, config} = get_config()
 
     children = [
       # Starts a worker by calling: FactoryLocator.Worker.start_link(arg)
@@ -17,10 +17,10 @@ defmodule FactoryLocator.Application do
         [
           name: :db_connection,
           database: config.mongo_address,
-          port: config.port,
+          port: config.mongo_port,
           pool_size: 2,
-          username: config.username,
-          password: config.password
+          username: config.mongo_username,
+          password: config.mongo_password
         ]
       ])
     ]
@@ -33,8 +33,17 @@ defmodule FactoryLocator.Application do
 
   def get_config() do
     {:ok, config} = File.read(@config_directory)
-    {:ok, config} = Jason.decode(config)
-    Kernel.struct(Config, config)
+    {:ok, config} = config |> String.replace("\n", "") |> Jason.decode()
+
+    Config.constructor(
+      config["mongo_address"],
+      config["mongo_username"],
+      config["mongo_password"],
+      config["mongo_port"],
+      config["order_collection"],
+      config["latitude_field"],
+      config["longitude_field"]
+    )
   end
 
   def set_config(

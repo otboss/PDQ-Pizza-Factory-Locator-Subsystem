@@ -19,7 +19,7 @@ defmodule Config do
       when is_bitstring(mongo_address) and
              is_bitstring(mongo_username) and
              is_bitstring(mongo_password) and
-             is_integer(mongo_port) and
+             is_bitstring(mongo_port) and
              is_bitstring(order_collection) and
              is_bitstring(latitude_field) and
              is_bitstring(longitude_field) do

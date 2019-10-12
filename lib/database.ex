@@ -1,23 +1,16 @@
 defmodule Database do
   @moduledoc """
   The mongodb Database API module. All communication to the database should be done
-  through this module
+  through this module.
   """
-
-  @mongo_address "localhost"
-  @mongo_username ""
-  @mongo_password ""
-  @mongo_port ""
-
-  # @neo4j_address "localhost"
-  # @neo4j_username ""
-  # @neo4j_password ""
-  # @neo4j_port ""
 
   def get_order_count() do
     0
   end
 
+  @doc """
+  Fetches orders from the database
+  """
   def get_orders(
         start_index,
         stop_index,

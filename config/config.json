@@ -1,0 +1,9 @@
+{
+    "mongo_address": "",
+    "mongo_username": "",
+    "mongo_password": "",
+    "mongo_port": "",
+    "order_collection": "",
+    "latitude_field": "",
+    "longitude_field": ""
+}

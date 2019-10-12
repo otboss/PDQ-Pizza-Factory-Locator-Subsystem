@@ -5,7 +5,7 @@ defmodule FactoryLocator do
   @base_process_count Process.list() |> length()
   # Set the process limit based on the max available resources of the host machine
   @process_limit 1000
-  @file_path "./output/best_new_factory_locations.txt"
+  @file_path "./output/best_new_factory_location.txt"
 
   @doc """
   Parses large order and traffic dataset stored in the database to calculate
@@ -25,13 +25,19 @@ defmodule FactoryLocator do
       |> Integer.parse()
       |> elem(0)
 
-    File.write!(@file_path, "[]")
+    try do
+      File.read!(@file_path)
+    rescue
+      _ ->
+        File.write(@file_path, "[]")
+    end
 
     Enum.each(0..chunks, fn x ->
       orders = Database.get_orders(chunk_size * x, chunk_size * x + chunk_size)
 
       Enum.each(orders, fn order ->
         spawn(fn ->
+          IO.puts("Processing order from chunk " <> (x |> to_string()))
           {:ok, current_results} = File.read!(@file_path) |> Jason.decode()
           # TODO: implement the location finding algorithm here
           # the output result should be a list of the top ten
@@ -46,6 +52,12 @@ defmodule FactoryLocator do
         throttler()
       end)
     end)
+  end
+
+  @doc """
+  Reads the output file and calculates the best location of a new pizza factory
+  """
+  def finalize do
   end
 
   # Limits the amount of running processes in order to prevent the host machine from crashing.

@@ -9,7 +9,7 @@ defmodule Order do
   The Order constructor.
   """
   def constructor(coordinates) when is_map(coordinates) do
-    coordinates.__struct__ == :"Elixir.Coordinates" ||
+    coordinates.__struct__ == Coordinates ||
       raise "invalid Coordinates struct provided"
 
     {:ok,

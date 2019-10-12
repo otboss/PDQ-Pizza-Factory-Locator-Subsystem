@@ -24,7 +24,6 @@ defmodule FactoryLocator do
   def determine_new_factory_location do
     order_cnt = Database.get_order_count()
     chunk_size = 1000
-    :ets.new(:buckets_registry, [:named_table])
 
     chunks =
       (order_cnt / chunk_size)
@@ -33,9 +32,21 @@ defmodule FactoryLocator do
       |> Integer.parse()
       |> elem(0)
 
+    :ets.new(:buckets_registry, [:named_table])
+
     :ets.insert(
       :buckets_registry,
       {"current_results", [0.0, 0.0, 0.0]}
+    )
+
+    :ets.insert(
+      :buckets_registry,
+      {"old_value", Enum.random(1..(:math.pow(2, 256) |> round()))}
+    )
+
+    :ets.insert(
+      :buckets_registry,
+      {"new_value", Enum.random(1..(:math.pow(2, 256) |> round()))}
     )
 
     Enum.each(0..chunks, fn x ->
@@ -48,7 +59,7 @@ defmodule FactoryLocator do
           # then the program will assume that all orders have been processed and finalize
           :ets.insert(
             :buckets_registry,
-            {"new_value", Enum.random(1..1_000_000_000_000_000_000_000_000_000)}
+            {"new_value", Enum.random(1..(:math.pow(2, 256) |> round()))}
           )
 
           current_results =
@@ -78,7 +89,6 @@ defmodule FactoryLocator do
     # This function call pauses the return until all orders have been processed.
     checker()
 
-    order_cnt = Database.get_order_count()
     result = :ets.lookup(:buckets_registry, "current_results") |> Enum.at(0) |> elem(1)
     x = (result |> Enum.at(0)) / order_cnt
     y = (result |> Enum.at(1)) / order_cnt

@@ -8,9 +8,11 @@ defmodule FactoryLocator do
   @file_path "./output/best_new_factory_locations.txt"
 
   @doc """
-  Parses large order and traffic dataset stored in the database and using as much
-  of the host machine's resources as possible, calculates the top ten locations
-  to construct a new pizza factory.
+  Parses large order and traffic dataset stored in the database to calculate
+  the best location for a new pizza factory using as much of the host machine's
+  resources as possible
+  Visit the following url for assistance:
+  https://stackoverflow.com/questions/6671183/calculate-the-center-point-of-multiple-latitude-longitude-coordinate-pairs
   """
   def determine_new_factory_location do
     order_cnt = Database.get_order_count()
@@ -22,6 +24,8 @@ defmodule FactoryLocator do
       |> to_string()
       |> Integer.parse()
       |> elem(0)
+
+    File.write!(@file_path, "[]")
 
     Enum.each(0..chunks, fn x ->
       orders = Database.get_orders(chunk_size * x, chunk_size * x + chunk_size)

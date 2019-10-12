@@ -12,6 +12,9 @@ defmodule FactoryLocator do
   @process_limit 1000
   @result_file "./output/final_result.json"
   @config FactoryLocator.Application.get_config() |> elem(1)
+  @new_value "new_value"
+  @old_value "old_value"
+  @current_results "current_results"
 
   @doc """
   Parses large order and traffic dataset stored in the database to calculate
@@ -31,11 +34,11 @@ defmodule FactoryLocator do
 
     :ets.insert(
       :buckets_registry,
-      {"current_results", [0.0, 0.0, 0.0]}
+      {@current_results, [0.0, 0.0, 0.0]}
     )
 
     # Initialize old_value and new_value to a random number
-    Enum.each(["old_value", "new_value"], fn value ->
+    Enum.each([@old_value, @new_value], fn value ->
       :ets.insert(
         :buckets_registry,
         {value, Enum.random(1..(:math.pow(2, 256) |> ceil()))}
@@ -52,11 +55,11 @@ defmodule FactoryLocator do
           # then the program will assume that all orders have been processed and finalize
           :ets.insert(
             :buckets_registry,
-            {"new_value", Enum.random(1..(:math.pow(2, 256) |> ceil()))}
+            {@new_value, Enum.random(1..(:math.pow(2, 256) |> ceil()))}
           )
 
           current_results =
-            :ets.lookup(:buckets_registry, "current_results") |> Enum.at(0) |> elem(1)
+            :ets.lookup(:buckets_registry, @current_results) |> Enum.at(0) |> elem(1)
 
           lat = order[@config.latitude_field] * :math.pi() / 180
           lon = order[@config.longitude_field] * :math.pi() / 180
@@ -69,7 +72,7 @@ defmodule FactoryLocator do
 
           :ets.insert(
             :buckets_registry,
-            {"current_results", current_results}
+            {@current_results, current_results}
           )
         end)
 
@@ -82,7 +85,7 @@ defmodule FactoryLocator do
     # This function call pauses the return until all orders have been processed.
     checker()
 
-    result = :ets.lookup(:buckets_registry, "current_results") |> Enum.at(0) |> elem(1)
+    result = :ets.lookup(:buckets_registry, @current_results) |> Enum.at(0) |> elem(1)
     x = (result |> Enum.at(0)) / order_cnt
     y = (result |> Enum.at(1)) / order_cnt
     z = (result |> Enum.at(2)) / order_cnt
@@ -107,8 +110,8 @@ defmodule FactoryLocator do
   end
 
   defp checker do
-    old_value = :ets.lookup(:buckets_registry, "old_value") |> Enum.at(0) |> elem(1)
-    new_value = :ets.lookup(:buckets_registry, "new_value") |> Enum.at(0) |> elem(1)
+    old_value = :ets.lookup(:buckets_registry, @old_value) |> Enum.at(0) |> elem(1)
+    new_value = :ets.lookup(:buckets_registry, @new_value) |> Enum.at(0) |> elem(1)
 
     old_value == new_value ||
       (
@@ -116,7 +119,7 @@ defmodule FactoryLocator do
 
         :ets.insert(
           :buckets_registry,
-          {"old_value", :ets.lookup(:buckets_registry, new_value)}
+          {@old_value, :ets.lookup(:buckets_registry, new_value)}
         )
 
         # Loop until "new_value" is unchanged. If this is the case then the processing

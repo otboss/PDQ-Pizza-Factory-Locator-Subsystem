@@ -25,10 +25,7 @@ defmodule FactoryLocator do
     order_cnt = Database.get_order_count()
     chunk_size = 1000
 
-    chunks =
-      (order_cnt / chunk_size)
-      |> Float.ceil()
-      |> round()
+    chunks = (order_cnt / chunk_size) |> ceil()
 
     :ets.new(:buckets_registry, [:named_table])
 
@@ -37,15 +34,13 @@ defmodule FactoryLocator do
       {"current_results", [0.0, 0.0, 0.0]}
     )
 
-    :ets.insert(
-      :buckets_registry,
-      {"old_value", Enum.random(1..(:math.pow(2, 256) |> round()))}
-    )
-
-    :ets.insert(
-      :buckets_registry,
-      {"new_value", Enum.random(1..(:math.pow(2, 256) |> round()))}
-    )
+    # Initialize old_value and new_value to a random number
+    Enum.each(["old_value", "new_value"], fn value ->
+      :ets.insert(
+        :buckets_registry,
+        {value, Enum.random(1..(:math.pow(2, 256) |> ceil()))}
+      )
+    end)
 
     Enum.each(0..chunks, fn x ->
       orders = Database.get_orders(chunk_size * x, chunk_size * x + chunk_size)
@@ -57,7 +52,7 @@ defmodule FactoryLocator do
           # then the program will assume that all orders have been processed and finalize
           :ets.insert(
             :buckets_registry,
-            {"new_value", Enum.random(1..(:math.pow(2, 256) |> round()))}
+            {"new_value", Enum.random(1..(:math.pow(2, 256) |> ceil()))}
           )
 
           current_results =

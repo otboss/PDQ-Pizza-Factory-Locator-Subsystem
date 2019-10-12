@@ -5,18 +5,20 @@ defmodule FactoryLocator do
   @base_process_count Process.list() |> length()
   # Set the process limit based on the max available resources of the host machine
   @process_limit 1000
-  @file_path "./output/best_new_factory_location.txt"
+  @result_file "./output/final_result.json"
+  @config FactoryLocator.Application.get_config()
 
   @doc """
   Parses large order and traffic dataset stored in the database to calculate
   the best location for a new pizza factory using as much of the host machine's
-  resources as possible
-  Visit the following url for assistance:
+  resources as possible. A version of this function in the future will account
+  for road traffic during operating hours. Visit the following url for assistance:
   https://stackoverflow.com/questions/6671183/calculate-the-center-point-of-multiple-latitude-longitude-coordinate-pairs
   """
   def determine_new_factory_location do
     order_cnt = Database.get_order_count()
     chunk_size = 1000
+    :ets.new(:buckets_registry, [:named_table])
 
     chunks =
       (order_cnt / chunk_size)
@@ -25,39 +27,60 @@ defmodule FactoryLocator do
       |> Integer.parse()
       |> elem(0)
 
-    try do
-      File.read!(@file_path)
-    rescue
-      _ ->
-        File.write(@file_path, "[]")
-    end
+    :ets.insert(
+      :buckets_registry,
+      {"current_results", [0.0, 0.0, 0.0]}
+    )
 
     Enum.each(0..chunks, fn x ->
       orders = Database.get_orders(chunk_size * x, chunk_size * x + chunk_size)
 
       Enum.each(orders, fn order ->
         spawn(fn ->
-          IO.puts("Processing order from chunk " <> (x |> to_string()))
-          {:ok, current_results} = File.read!(@file_path) |> Jason.decode()
-          # TODO: implement the location finding algorithm here
-          # the output result should be a list of the top ten
-          # best coordinates to place a new factory by calculate
-          # the midpoint of all the coordinates. A version of this
-          # function in the future will account for road traffic
-          # during operating hours
-          {:ok, current_results} = Jason.encode(current_results)
-          File.write!(@file_path, current_results)
+          :ets.insert(
+            :buckets_registry,
+            {"new_value", Enum.random(1..1_000_000_000_000_000_000_000_000_000)}
+          )
+
+          current_results =
+            :ets.lookup(:buckets_registry, "current_results") |> Enum.at(0) |> elem(1)
+
+          lat = order[@config.latitude_field] * :math.pi() / 180
+          lon = order[@config.longitude_field] * :math.pi() / 180
+
+          current_results = [
+            Enum.at(current_results, 0) + :math.cos(lat) * :math.cos(lon),
+            Enum.at(current_results, 1) + :math.cos(lat) * :math.sin(lon),
+            Enum.at(current_results, 2) + :math.sin(lat)
+          ]
+
+          :ets.insert(
+            :buckets_registry,
+            {"current_results", current_results}
+          )
         end)
 
         throttler()
       end)
     end)
-  end
 
-  @doc """
-  Reads the output file and calculates the best location of a new pizza factory
-  """
-  def finalize do
+    # Since all the functions are being processed asynchronously a function
+    # will be needed to pause until all orders have been processed.
+    # This function call pauses the return until all locations have been processed.
+    checker()
+
+    order_cnt = Database.get_order_count()
+    result = :ets.lookup(:buckets_registry, "current_results") |> Enum.at(0) |> elem(1)
+    x = (result |> Enum.at(0)) / order_cnt
+    y = (result |> Enum.at(1)) / order_cnt
+    z = (result |> Enum.at(2)) / order_cnt
+    lon = :math.atan2(y, x)
+    hyp = :math.sqrt(x * x + y * y)
+    lat = :math.atan2(z, hyp)
+    result = [lat * 180 / :math.pi(), lon * 180 / :math.pi()]
+    {:ok, result_json} = Jason.encode(result)
+    File.write(@result_file, result_json)
+    result_json
   end
 
   # Limits the amount of running processes in order to prevent the host machine from crashing.
@@ -68,6 +91,23 @@ defmodule FactoryLocator do
       (
         Process.sleep(300)
         throttler()
+      )
+  end
+
+  defp checker do
+    old_value = :ets.lookup(:buckets_registry, "old_value") |> Enum.at(0) |> elem(1)
+    new_value = :ets.lookup(:buckets_registry, "new_value") |> Enum.at(0) |> elem(1)
+
+    old_value == new_value ||
+      (
+        Process.sleep(1000)
+
+        :ets.insert(
+          :buckets_registry,
+          {"old_value", :ets.lookup(:buckets_registry, new_value)}
+        )
+
+        checker()
       )
   end
 end

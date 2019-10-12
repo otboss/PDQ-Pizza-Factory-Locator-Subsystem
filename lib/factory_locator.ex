@@ -28,9 +28,7 @@ defmodule FactoryLocator do
     chunks =
       (order_cnt / chunk_size)
       |> Float.ceil()
-      |> to_string()
-      |> Integer.parse()
-      |> elem(0)
+      |> round()
 
     :ets.new(:buckets_registry, [:named_table])
 

@@ -7,7 +7,12 @@ defmodule Database do
   # @config FactoryLocator.Application.get_config() |> elem(1)
 
   def get_order_count() do
-    0
+    try do
+      # TODO: Implement order count function here using the Mongo driver
+      {:ok, 0}
+    rescue
+      x -> {:error, x}
+    end
   end
 
   @doc """
@@ -21,15 +26,21 @@ defmodule Database do
         zone_coordinates_stop \\ nil
       )
       when is_integer(start_index) and is_integer(stop_index) do
-    if zone_coordinates_start != nil && zone_coordinates_stop != nil do
-      if zone_coordinates_start.__struct__ == Coordinates &&
-           zone_coordinates_stop.__struct__ == Coordinates do
-        # Fetch orders within a particular zone
+    try do
+      if zone_coordinates_start != nil && zone_coordinates_stop != nil do
+        if zone_coordinates_start.__struct__ == Coordinates &&
+             zone_coordinates_stop.__struct__ == Coordinates do
+          # TODO: Fetch orders within a particular zone using Mongo driver
+          {:ok, [%Order{}]}
+        else
+          raise "invalid zone provided"
+        end
       else
-        raise "invalid zone provided"
+        # TODO: Fetch all orders using Mongo driver
+        {:ok, [%Order{}]}
       end
-    else
-      # Fetch all orders
+    rescue
+      x -> {:error, x}
     end
   end
 end

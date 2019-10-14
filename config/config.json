@@ -3,7 +3,7 @@
     "mongo_username": "",
     "mongo_password": "",
     "mongo_port": 27017,
-    "order_collection": "",
+    "orders_collection": "",
     "latitude_field": "",
     "longitude_field": ""
 }

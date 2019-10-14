@@ -40,7 +40,7 @@ defmodule FactoryLocator.Application do
       config["mongo_username"],
       config["mongo_password"],
       config["mongo_port"],
-      config["order_collection"],
+      config["orders_collection"],
       config["latitude_field"],
       config["longitude_field"]
     )

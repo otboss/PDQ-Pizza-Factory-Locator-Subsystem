@@ -13,7 +13,6 @@ defmodule FactoryLocator do
   # Set the chunk size based on the available RAM of the host machine
   @chunk_size 1000
   @result_file "./output/final_result.json"
-  @config FactoryLocator.Application.get_config() |> elem(1)
   @new_value "new_value"
   @old_value "old_value"
   @current_results "current_results"
@@ -62,8 +61,8 @@ defmodule FactoryLocator do
           current_results =
             :ets.lookup(:buckets_registry, @current_results) |> Enum.at(0) |> elem(1)
 
-          lat = order[@config.latitude_field] * :math.pi() / 180
-          lon = order[@config.longitude_field] * :math.pi() / 180
+          lat = order.coordinates.x * :math.pi() / 180
+          lon = order.coordinates.y * :math.pi() / 180
 
           current_results = [
             Enum.at(current_results, 0) + :math.cos(lat) * :math.cos(lon),

@@ -4,12 +4,14 @@ defmodule Database do
   through this module.
   """
 
+  # @config FactoryLocator.Application.get_config() |> elem(1)
+
   def get_order_count() do
     0
   end
 
   @doc """
-  Fetches orders from the database
+  Fetches orders from the database. Returns an array of Order structs.
   """
   def get_orders(
         start_index,

@@ -4,8 +4,9 @@ defmodule Database do
   through this module.
   """
 
-  # @config FactoryLocator.Application.get_config() |> elem(1)
-
+  @doc """
+  Gets the number of orders from the database
+  """
   def get_order_count() do
     try do
       {:ok, config} = FactoryLocator.Application.get_config()

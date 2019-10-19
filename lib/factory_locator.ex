@@ -80,7 +80,7 @@ defmodule FactoryLocator do
       end)
     end)
 
-    # Since all the functions are being processed asynchronously a function
+    # Since all the functions are being processed concurrently a function
     # will be needed to pause until all orders have been processed.
     # This function call pauses the return until all orders have been processed.
     checker()

@@ -12,7 +12,7 @@ defmodule Database do
 
       Mongo.count_documents(
         :db_connection,
-        config["orders_collection"],
+        config.orders_collection,
         %{}
       )
     rescue
@@ -42,21 +42,21 @@ defmodule Database do
              zone_coordinates_stop.__struct__ == Coordinates do
           # Fetch orders within a particular zone using Mongo driver
           {:ok,
-           Mongo.find(:db_connection, config["orders_collection"], %{
+           Mongo.find(:db_connection, config.orders_collection, %{
              "$slice": [start_index, stop_index - start_index],
              "$and": [
-               %{"#{config["latitude_field"]}": %{"$gte": zone_coordinates_start.x}},
-               %{"#{config["longitude_field"]}": %{"$lte": zone_coordinates_start.y}},
-               %{"#{config["latitude_field"]}": %{"$lte": zone_coordinates_stop.x}},
-               %{"#{config["longitude_field"]}": %{"$gte": zone_coordinates_stop.y}}
+               %{"#{config.latitude_field}": %{"$gte": zone_coordinates_start.x}},
+               %{"#{config.longitude_field}": %{"$lte": zone_coordinates_start.y}},
+               %{"#{config.latitude_field}": %{"$lte": zone_coordinates_stop.x}},
+               %{"#{config.longitude_field}": %{"$gte": zone_coordinates_stop.y}}
              ]
            })
            |> Enum.to_list()
            |> Enum.map(fn order_json ->
              {:ok, coordinates} =
                Coordinates.constructor(
-                 order_json[config["latitude_field"]],
-                 order_json[config["longitude_field"]]
+                 order_json[config.latitude_field],
+                 order_json[config.longitude_field]
                )
 
              {:ok, order} = Order.constructor(coordinates)
@@ -68,15 +68,15 @@ defmodule Database do
       else
         # Fetch all orders within range using Mongo driver
         {:ok,
-         Mongo.find(:db_connection, config["orders_collection"], %{
+         Mongo.find(:db_connection, config.orders_collection, %{
            "$slice": [start_index, stop_index - start_index]
          })
          |> Enum.to_list()
          |> Enum.map(fn order_json ->
            {:ok, coordinates} =
              Coordinates.constructor(
-               order_json[config["latitude_field"]],
-               order_json[config["longitude_field"]]
+               order_json[config.latitude_field],
+               order_json[config.longitude_field]
              )
 
            {:ok, order} = Order.constructor(coordinates)

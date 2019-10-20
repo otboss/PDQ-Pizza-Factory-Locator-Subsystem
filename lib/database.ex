@@ -38,7 +38,7 @@ defmodule Database do
     try do
       {:ok, config} = FactoryLocator.Application.get_config()
 
-      if zone_coordinates_start != nil && zone_coordinates_stop != nil do
+      if is_map(zone_coordinates_start) && is_map(zone_coordinates_stop) do
         if zone_coordinates_start.__struct__ == Coordinates &&
              zone_coordinates_stop.__struct__ == Coordinates do
           # Fetch orders within a particular zone using Mongo driver

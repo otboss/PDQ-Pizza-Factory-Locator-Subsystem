@@ -102,14 +102,14 @@ defmodule Database do
   end
 
   @doc """
-  Gets the closets factory to coordinates provided using Pythagorean's theorem.
+  Gets the closets factory to the coordinates provided using Pythagorean's theorem.
   Also accepts a max search radius
   """
   def get_closest_factory(coordinates, radius \\ nil)
       when is_map(coordinates) do
     try do
       {:ok, config} = FactoryLocator.Application.get_config()
-      radius != nil && (is_number(radius) || raise "invalid radius provided")
+      !is_nil(radius) && (is_number(radius) || raise "invalid radius provided")
 
       coordinates.__struct__ == Coordinates ||
         raise "invalid coordinates provided"

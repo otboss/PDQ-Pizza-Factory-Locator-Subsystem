@@ -4,6 +4,7 @@
     "mongo_password": "",
     "mongo_port": 27017,
     "orders_collection": "",
+    "factories_collection": "",
     "latitude_field": "",
     "longitude_field": ""
 }

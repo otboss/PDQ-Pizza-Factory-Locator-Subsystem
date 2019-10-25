@@ -41,6 +41,7 @@ defmodule FactoryLocator.Application do
       config["mongo_password"],
       config["mongo_port"],
       config["orders_collection"],
+      config["factories_collection"],
       config["latitude_field"],
       config["longitude_field"]
     )
@@ -52,6 +53,7 @@ defmodule FactoryLocator.Application do
         mongo_password,
         mongo_port,
         order_collection,
+        factories_collection,
         latitude_field,
         longitude_field
       )
@@ -60,6 +62,7 @@ defmodule FactoryLocator.Application do
              is_bitstring(mongo_password) and
              is_integer(mongo_port) and
              is_bitstring(order_collection) and
+             is_bitstring(factories_collection) and
              is_bitstring(latitude_field) and
              is_bitstring(longitude_field) do
     {:ok, config} =
@@ -69,6 +72,7 @@ defmodule FactoryLocator.Application do
         mongo_password,
         mongo_port,
         order_collection,
+        factories_collection,
         latitude_field,
         longitude_field
       )

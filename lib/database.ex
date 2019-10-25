@@ -10,12 +10,7 @@ defmodule Database do
   def get_order_count() do
     try do
       {:ok, config} = FactoryLocator.Application.get_config()
-
-      Mongo.count_documents(
-        :db_connection,
-        config.orders_collection,
-        %{}
-      )
+      Mongo.count_documents(:db_connection, config.orders_collection, %{})
     rescue
       x -> {:error, x}
     end
@@ -84,6 +79,66 @@ defmodule Database do
            order
          end)}
       end
+    rescue
+      x -> {:error, x}
+    end
+  end
+
+  @doc """
+  Saves a factory to the database
+  """
+  def save_factory(factory) when is_map(factory) do
+    try do
+      {:ok, config} = FactoryLocator.Application.get_config()
+
+      factory.__struct__ == Factory ||
+        raise "invalid factory provided"
+
+      factory = Map.from_struct(factory)
+      Mongo.insert_one(:db_connection, config.factories_collection, factory)
+    rescue
+      x -> {:error, x}
+    end
+  end
+
+  @doc """
+  Gets the closets factory to coordinates provided using Pythagorean's theorem.
+  Also accepts a max search radius
+  """
+  def get_closest_factory(coordinates, radius \\ nil)
+      when is_map(coordinates) do
+    try do
+      {:ok, config} = FactoryLocator.Application.get_config()
+      radius != nil && (is_number(radius) || raise "invalid radius provided")
+
+      coordinates.__struct__ == Coordinates ||
+        raise "invalid coordinates provided"
+
+      {:ok,
+       Kernel.struct(
+         Factory,
+         Mongo.find(
+           :db_connection,
+           config.factories_collection,
+           %{
+             "$group": %{
+               _id: "$_id",
+               distance: %{
+                 "$sqrt": %{
+                   "$add": [
+                     %{"$pow": [config.latitude_field, 2]},
+                     %{"$pow": [config.longitude_field, 2]}
+                   ]
+                 }
+               }
+             }
+           },
+           sort: %{distance: -1},
+           limit: 1
+         )
+         |> Enum.to_list()
+         |> Enum.at(0)
+       )}
     rescue
       x -> {:error, x}
     end

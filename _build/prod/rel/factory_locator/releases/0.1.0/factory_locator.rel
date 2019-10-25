@@ -1,0 +1,15 @@
+%% coding: utf-8
+{release,{"factory_locator","0.1.0"},
+         {erts,"10.4.4"},
+         [{kernel,"6.4.1",permanent},
+          {stdlib,"3.9.2",permanent},
+          {elixir,"1.9.1",permanent},
+          {sasl,"3.4",permanent},
+          {factory_locator,"0.1.0",permanent},
+          {iex,"1.9.1",none},
+          {compiler,"7.4.4",permanent},
+          {connection,"1.0.4",permanent},
+          {db_connection,"2.1.1",permanent},
+          {jason,"1.1.2",permanent},
+          {logger,"1.9.1",permanent},
+          {mongodb,"0.5.1",permanent}]}.

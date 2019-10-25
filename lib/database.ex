@@ -109,7 +109,10 @@ defmodule Database do
       when is_map(coordinates) do
     try do
       {:ok, config} = FactoryLocator.Application.get_config()
-      !is_nil(radius) && (is_number(radius) || raise "invalid radius provided")
+
+      !is_nil(radius) &&
+        (is_number(radius) ||
+           raise "invalid radius provided. Radius should be numerical (kilometers).")
 
       coordinates.__struct__ == Coordinates ||
         raise "invalid coordinates provided"
@@ -126,14 +129,24 @@ defmodule Database do
                distance: %{
                  "$sqrt": %{
                    "$add": [
-                     %{"$pow": [config.latitude_field, 2]},
-                     %{"$pow": [config.longitude_field, 2]}
+                     %{
+                       "$pow": [
+                         %{"$substract": ["$#{config.latitude_field}", coordinates.x]},
+                         2
+                       ]
+                     },
+                     %{
+                       "$pow": [
+                         %{"$substract": ["$#{config.longitude_field}", coordinates.y]},
+                         2
+                       ]
+                     }
                    ]
                  }
                }
              }
            },
-           sort: %{distance: -1},
+           sort: %{distance: 1},
            limit: 1
          )
          |> Enum.to_list()

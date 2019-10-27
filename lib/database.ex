@@ -4,12 +4,26 @@ defmodule Database do
   through this module.
   """
 
+  def connect() do
+    {:ok, config} = PizzaFactoryLocator.get_config()
+
+    {:ok, _} =
+      Mongo.start_link(
+        name: :db_connection,
+        database: config.mongo_address,
+        port: config.mongo_port,
+        username: config.mongo_username,
+        password: config.mongo_password,
+        pool_size: 2
+      )
+  end
+
   @doc """
   Gets the number of orders from the database
   """
   def get_order_count() do
     try do
-      {:ok, config} = FactoryLocator.Application.get_config()
+      {:ok, config} = PizzaFactoryLocator.get_config()
       Mongo.count_documents(:db_connection, config.orders_collection, %{})
     rescue
       x -> {:error, x}
@@ -31,7 +45,7 @@ defmodule Database do
       )
       when is_integer(start_index) and is_integer(stop_index) do
     try do
-      {:ok, config} = FactoryLocator.Application.get_config()
+      {:ok, config} = PizzaFactoryLocator.get_config()
 
       if is_map(zone_coordinates_start) && is_map(zone_coordinates_stop) do
         if zone_coordinates_start.__struct__ == Coordinates &&
@@ -89,7 +103,7 @@ defmodule Database do
   """
   def save_factory(factory) when is_map(factory) do
     try do
-      {:ok, config} = FactoryLocator.Application.get_config()
+      {:ok, config} = PizzaFactoryLocator.get_config()
 
       factory.__struct__ == Factory ||
         raise "invalid factory provided"
@@ -108,7 +122,7 @@ defmodule Database do
   def get_closest_factory(coordinates, radius \\ nil)
       when is_map(coordinates) do
     try do
-      {:ok, config} = FactoryLocator.Application.get_config()
+      {:ok, config} = PizzaFactoryLocator.get_config()
 
       !is_nil(radius) &&
         (is_number(radius) ||

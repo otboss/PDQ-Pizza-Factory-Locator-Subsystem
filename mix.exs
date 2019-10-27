@@ -1,9 +1,9 @@
-defmodule FactoryLocator.MixProject do
+defmodule PizzaFactoryLocator.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :factory_locator,
+      app: :pizza_factory_locator,
       version: "0.1.0",
       elixir: "~> 1.9",
       start_permanent: Mix.env() == :prod,
@@ -14,8 +14,7 @@ defmodule FactoryLocator.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger],
-      mod: {FactoryLocator.Application, []}
+      extra_applications: [:logger, :crypto]
     ]
   end
 

@@ -6,7 +6,7 @@ This application is the finished product of the Pizza Delivered Quickly Factory 
 Reference: https://people.uwec.edu/sulzertj/Teaching/is455/Resources/PizzaDeliveryQuickly_Case_Study.pdf
 <br>
 <br>
-<h2>Command Line API</h2>
+<h2>Command Line API Documentation</h2>
 <h3>1. Update Configuration</h3>
 <br>
 Run the following within the project directory. Enter the corresponding information of the mongo database server.

@@ -46,7 +46,7 @@ longitude_field_name - The name of the longitude field within each collection do
 <br>
 <br>
 <h3>2. Get the current configuration</h3>
-This command reads the configuration from file and prints it to the console
+This command reads the configuration from file and prints it to the console.
 <br>
 <br>
 <pre>

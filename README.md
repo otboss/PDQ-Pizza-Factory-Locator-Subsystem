@@ -12,12 +12,6 @@ Module Documentation
 <br>
 Run the following within the project directory. Enter the corresponding information to your mongo database.
 <br>
-mongo_database_address - The IP address of the Mongo Database server
-mongo_database_username - The Auth Username of the Mongo Database server
-mongo_database_password - The Auth Password of the Mongo Database server
-mongo_database_port - The port number of the Mongo Database Server
-orders_collection_name - The name given to the collection used to store pizza orders
-<br>
 <br>
 _build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval """
 PizzaFactoryLocator.set_config(
@@ -31,6 +25,13 @@ PizzaFactoryLocator.set_config(
   [longitude_field_name]
 )
 """;
+<br>
+<br>
+mongo_database_address - The IP address of the Mongo Database server
+mongo_database_username - The Auth Username of the Mongo Database server
+mongo_database_password - The Auth Password of the Mongo Database server
+mongo_database_port - The port number of the Mongo Database Server
+orders_collection_name - The name given to the collection used to store pizza orders
 <br>
 <br>
 2. Get the current configuration
@@ -75,6 +76,12 @@ Database.save_factory(factory)
 """;
 <br>
 <br>
+x_coordinate - The x coordinate of the factory
+y_coordinate - The y coordinate of the factory
+factory_name - The name of the factory
+phone_number - The phone number of the factory
+<br>
+<br>
 5. Get nearest factory
 Gets the nearest factory to supplied coordinates. Takes an optional radius parameter measured in kilometers.
 <br>
@@ -91,4 +98,7 @@ Database.connect()
 )
 factory |> Map.from_struct() |> Jason.encode() |> IO.puts()
 """;
-
+<br>
+<br>
+x_coordinate - The x coordinate of the origin
+y_coordinate - The y coordinate of the origin

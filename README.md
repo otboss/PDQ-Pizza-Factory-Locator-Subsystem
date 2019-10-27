@@ -92,8 +92,3 @@ Database.connect()
 factory |> Map.from_struct() |> Jason.encode() |> IO.puts()
 """;
 
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/pizza_factory_locator](https://hexdocs.pm/pizza_factory_locator).
-

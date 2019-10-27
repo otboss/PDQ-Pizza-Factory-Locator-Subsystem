@@ -7,7 +7,7 @@ Reference: https://people.uwec.edu/sulzertj/Teaching/is455/Resources/PizzaDelive
 <br>
 <br>
 <h2>Command Line API Documentation</h2>
-Run the following commands within the project directory.
+Run the following commands within the project's directory root.
 <br>
 <br>
 <h3>1. Set Configuration</h3>

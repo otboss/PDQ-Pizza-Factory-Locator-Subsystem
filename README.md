@@ -7,7 +7,9 @@ Reference: https://people.uwec.edu/sulzertj/Teaching/is455/Resources/PizzaDelive
 <br>
 <br>
 <h2>Command Line API Documentation</h2>
-Run the following commands within the project directory
+Run the following commands within the project directory.
+<br>
+<br>
 <h3>1. Set Configuration</h3>
 <br>
 Updates the configuration. Enter the corresponding information of the mongo database server.
@@ -46,7 +48,7 @@ latitude_field_name - The name of the latitude field within each collection docu
 longitude_field_name - The name of the longitude field within each collection document
 <br>
 <br>
-<h3>2. Get the current configuration</h3>
+<h3>2. Get Configuration</h3>
 This command reads the configuration from file and prints it to the console.
 <br>
 <br>
@@ -104,7 +106,7 @@ phone_number - The phone number of the factory
 <br>
 <br>
 <br>
-<h3>5. Get closest factory</h3>
+<h3>5. Get Closest Factory</h3>
 Gets the nearest factory to supplied coordinates. Takes an optional area parameter measured in kilometers.
 <br>
 <br>

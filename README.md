@@ -38,6 +38,12 @@ mongo_database_port - The port number of the Mongo Database Server
 <br>
 orders_collection_name - The name given to the collection used to store pizza orders
 <br>
+factories_collection_name - The name given to the collection used to store factories
+<br>
+latitude_field_name - The name of the latitude field within each collection document
+<br>
+longitude_field_name - The name of the longitude field within each collection document
+<br>
 <br>
 <h3>2. Get the current configuration</h3>
 This command reads the configuration from file and prints it to the console
@@ -98,7 +104,7 @@ phone_number - The phone number of the factory
 <br>
 <br>
 <h3>5. Get nearest factory</h3>
-Gets the nearest factory to supplied coordinates. Takes an optional radius parameter measured in kilometers.
+Gets the nearest factory to supplied coordinates. Takes an optional area parameter measured in kilometers.
 <br>
 <br>
 <pre>
@@ -120,3 +126,5 @@ factory |> Map.from_struct() |> Jason.encode() |> IO.puts()
 x_coordinate - The x coordinate of the origin
 <br>
 y_coordinate - The y coordinate of the origin
+<br>
+radius - The search area in kilometers

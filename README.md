@@ -29,9 +29,13 @@ PizzaFactoryLocator.set_config(
 <br>
 <br>
 mongo_database_address - The IP address of the Mongo Database server
+<br>
 mongo_database_username - The Auth Username of the Mongo Database server
+<br>
 mongo_database_password - The Auth Password of the Mongo Database server
+<br>
 mongo_database_port - The port number of the Mongo Database Server
+<br>
 orders_collection_name - The name given to the collection used to store pizza orders
 <br>
 <br>
@@ -84,9 +88,13 @@ Database.save_factory(factory)
 <br>
 <br>
 x_coordinate - The x coordinate of the factory
+<br>
 y_coordinate - The y coordinate of the factory
+<br>
 factory_name - The name of the factory
+<br>
 phone_number - The phone number of the factory
+<br>
 <br>
 <br>
 <h3>5. Get nearest factory</h3>
@@ -110,4 +118,5 @@ factory |> Map.from_struct() |> Jason.encode() |> IO.puts()
 <br>
 <br>
 x_coordinate - The x coordinate of the origin
+<br>
 y_coordinate - The y coordinate of the origin

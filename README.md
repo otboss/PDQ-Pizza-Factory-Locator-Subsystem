@@ -12,7 +12,7 @@ Reference: https://people.uwec.edu/sulzertj/Teaching/is455/Resources/PizzaDelive
 Run the following within the project directory. Enter the corresponding information of the mongo database server.
 <br>
 <br>
-
+<pre>
 _build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval """
 PizzaFactoryLocator.set_config(
   [mongo_database_address],
@@ -25,7 +25,7 @@ PizzaFactoryLocator.set_config(
   [longitude_field_name]
 )
 """;
-
+</pre>
 <br>
 <br>
 mongo_database_address - The IP address of the Mongo Database server
@@ -39,33 +39,33 @@ orders_collection_name - The name given to the collection used to store pizza or
 This command reads the configuration from file and prints it to the console
 <br>
 <br>
-
+<pre>
 _build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval """
 {:ok, config} = PizzaFactoryLocator.get_config()
 {:ok, config} = config |> Map.from_struct() |> Jason.encode()
 IO.puts(config)
 """;
-
+</pre>
 <br>
 <br>
 <h3>3. Determine new Pizza Factory Location</h3>
 Reads all the Pizza Orders from the database and, using the coordinates for each order, calculates the ideal location to place a new pizza factory.
 <br>
 <br>
-
+<pre>
 _build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval """
 Application.ensure_all_started(:mongodb)
 Database.connect()
 PizzaFactoryLocator.determine_new_factory_location() |> IO.inspect()
 """;
-
+</pre>
 <br>
 <br>
 <h3>4. Save Factory</h3>
 Saves a Factory to the database.
 <br>
 <br>
-
+<pre>
 _build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval """
 Application.ensure_all_started(:mongodb)
 Database.connect()
@@ -80,7 +80,7 @@ Database.connect()
 )
 Database.save_factory(factory)
 """;
-
+</pre>
 <br>
 <br>
 x_coordinate - The x coordinate of the factory
@@ -93,7 +93,7 @@ phone_number - The phone number of the factory
 Gets the nearest factory to supplied coordinates. Takes an optional radius parameter measured in kilometers.
 <br>
 <br>
-
+<pre>
 _build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval """
 Application.ensure_all_started(:mongodb)
 Database.connect()
@@ -106,7 +106,7 @@ Database.connect()
 )
 factory |> Map.from_struct() |> Jason.encode() |> IO.puts()
 """;
-
+</pre>
 <br>
 <br>
 x_coordinate - The x coordinate of the origin

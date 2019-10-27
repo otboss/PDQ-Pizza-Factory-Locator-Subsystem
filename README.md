@@ -16,7 +16,7 @@ Updates the configuration. Enter the corresponding information of the mongo data
 <br>
 <br>
 <pre>
-_build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval """
+_build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 PizzaFactoryLocator.set_config(
   [mongo_database_address],
   [mongo_database_username],
@@ -27,7 +27,7 @@ PizzaFactoryLocator.set_config(
   [latitude_field_name],
   [longitude_field_name]
 )
-""";
+''';
 </pre>
 <br>
 <br>
@@ -48,11 +48,11 @@ This command reads the configuration from file and prints it to the console.
 <br>
 <br>
 <pre>
-_build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval """
+_build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 {:ok, config} = PizzaFactoryLocator.get_config()
 {:ok, config} = config |> Map.from_struct() |> Jason.encode()
 IO.puts(config)
-""";
+''';
 </pre>
 <br>
 <br>
@@ -61,11 +61,11 @@ Reads all the Pizza Orders from the database and, using the coordinates for each
 <br>
 <br>
 <pre>
-_build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval """
+_build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 Application.ensure_all_started(:mongodb)
 Database.connect()
 PizzaFactoryLocator.determine_new_factory_location() |> IO.inspect()
-""";
+''';
 </pre>
 <br>
 <br>
@@ -74,7 +74,7 @@ Saves a Factory to the database.
 <br>
 <br>
 <pre>
-_build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval """
+_build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 Application.ensure_all_started(:mongodb)
 Database.connect()
 {:ok, coordinates} = Coordinates.constructor(
@@ -87,7 +87,7 @@ Database.connect()
   [phone_number],
 )
 Database.save_factory(factory)
-""";
+''';
 </pre>
 <br>
 <br>
@@ -105,7 +105,7 @@ Gets the nearest factory to supplied coordinates. Takes an optional radius param
 <br>
 <br>
 <pre>
-_build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval """
+_build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 Application.ensure_all_started(:mongodb)
 Database.connect()
 {:ok, coordinates} = Coordinates.constructor(
@@ -117,7 +117,7 @@ Database.connect()
 )
 {:ok, factory} = factory |> Map.from_struct() |> Jason.encode()
 IO.puts(factory)
-""";
+''';
 </pre>
 <br>
 <br>

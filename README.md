@@ -7,9 +7,10 @@ Reference: https://people.uwec.edu/sulzertj/Teaching/is455/Resources/PizzaDelive
 <br>
 <br>
 <h2>Command Line API Documentation</h2>
-<h3>1. Update Configuration</h3>
+Run the following commands within the project directory
+<h3>1. Set Configuration</h3>
 <br>
-Run the following within the project directory. Enter the corresponding information of the mongo database server.
+Updates the configuration. Enter the corresponding information of the mongo database server.
 <br>
 <br>
 <pre>
@@ -103,7 +104,7 @@ phone_number - The phone number of the factory
 <br>
 <br>
 <br>
-<h3>5. Get nearest factory</h3>
+<h3>5. Get closest factory</h3>
 Gets the nearest factory to supplied coordinates. Takes an optional area parameter measured in kilometers.
 <br>
 <br>

@@ -115,7 +115,8 @@ Database.connect()
 {:ok, factory} = Database.get_closest_factory(
   coordinates, [radius] #optional
 )
-factory |> Map.from_struct() |> Jason.encode() |> IO.puts()
+{:ok, factory} = factory |> Map.from_struct() |> Jason.encode()
+IO.puts(factory)
 """;
 </pre>
 <br>

@@ -6,10 +6,10 @@ This application is the finished product of the Pizza Delivered Quickly Factory 
 Reference: https://people.uwec.edu/sulzertj/Teaching/is455/Resources/PizzaDeliveryQuickly_Case_Study.pdf
 <br>
 <br>
-Command Line API
+<h2>Command Line API</h2>
 <br>
 <br>
-1. Update Configuration
+1. <b>Update Configuration</b>
 <br>
 Run the following within the project directory. Enter the corresponding information to your mongo database.
 <br>
@@ -28,14 +28,14 @@ PizzaFactoryLocator.set_config(
 """;
 <br>
 <br>
-mongo_database_address - The IP address of the Mongo Database server
-mongo_database_username - The Auth Username of the Mongo Database server
-mongo_database_password - The Auth Password of the Mongo Database server
-mongo_database_port - The port number of the Mongo Database Server
-orders_collection_name - The name given to the collection used to store pizza orders
+* mongo_database_address - The IP address of the Mongo Database server
+* mongo_database_username - The Auth Username of the Mongo Database server
+* mongo_database_password - The Auth Password of the Mongo Database server
+* mongo_database_port - The port number of the Mongo Database Server
+* orders_collection_name - The name given to the collection used to store pizza orders
 <br>
 <br>
-2. Get the current configuration
+2. <b>Get the current configuration</b>
 This command reads the configuration from file and prints it to the console
 <br>
 <br>
@@ -46,7 +46,7 @@ IO.puts(config)
 """;
 <br>
 <br>
-3. Determine new Pizza Factory Location
+3. <b>Determine new Pizza Factory Location</b>
 Reads all the Pizza Orders from the database and, using the coordinates for each order, calculates the ideal location to place a new pizza factory.
 <br>
 <br>
@@ -57,7 +57,7 @@ PizzaFactoryLocator.determine_new_factory_location() |> IO.inspect()
 """;
 <br>
 <br>
-4. Save Factory
+4. <b>Save Factory</b>
 Saves a Factory to the database.
 <br>
 <br>
@@ -77,13 +77,13 @@ Database.save_factory(factory)
 """;
 <br>
 <br>
-x_coordinate - The x coordinate of the factory
-y_coordinate - The y coordinate of the factory
-factory_name - The name of the factory
-phone_number - The phone number of the factory
+* x_coordinate - The x coordinate of the factory
+* y_coordinate - The y coordinate of the factory
+* factory_name - The name of the factory
+* phone_number - The phone number of the factory
 <br>
 <br>
-5. Get nearest factory
+5. <b>Get nearest factory</b>
 Gets the nearest factory to supplied coordinates. Takes an optional radius parameter measured in kilometers.
 <br>
 <br>
@@ -101,5 +101,5 @@ factory |> Map.from_struct() |> Jason.encode() |> IO.puts()
 """;
 <br>
 <br>
-x_coordinate - The x coordinate of the origin
-y_coordinate - The y coordinate of the origin
+*x_coordinate - The x coordinate of the origin
+*y_coordinate - The y coordinate of the origin

@@ -101,5 +101,5 @@ factory |> Map.from_struct() |> Jason.encode() |> IO.puts()
 """;
 <br>
 <br>
-*x_coordinate - The x coordinate of the origin
-*y_coordinate - The y coordinate of the origin
+* x_coordinate - The x coordinate of the origin
+* y_coordinate - The y coordinate of the origin

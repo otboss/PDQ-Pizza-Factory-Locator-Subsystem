@@ -56,7 +56,7 @@ IO.puts(config)
 </pre>
 <br>
 <br>
-<h3>3. Determine new Pizza Factory Location</h3>
+<h3>3. Determine Pizza Factory Location</h3>
 Reads all the Pizza Orders from the database and, using the coordinates for each order, calculates the ideal location to place a new pizza factory.
 <br>
 <br>

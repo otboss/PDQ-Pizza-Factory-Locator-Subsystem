@@ -111,7 +111,7 @@ Application.ensure_all_started(:mongodb)
   <i>[y_coordinate]</i>
 )
 {:ok, factory} = Database.get_closest_factory(
-  coordinates #optional,<i>[max_radius]</i> 
+  coordinates, <i>[max_radius]</i> #optional, remove or replace with <b>nil</b> if to be ignored
 )
 {:ok, factory} = factory |> Map.from_struct() |> Jason.encode()
 IO.puts(factory)

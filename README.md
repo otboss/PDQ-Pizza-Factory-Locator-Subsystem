@@ -99,7 +99,7 @@ Application.ensure_all_started(:mongodb)
 <br>
 <br>
 <h3>5. Get Closest Factory</h3>
-Gets the nearest factory to supplied coordinates. Takes an optional radius parameter measured in kilometers.
+Gets the nearest factory to supplied coordinates. Takes an optional max radius parameter measured in kilometers.
 <br>
 <br>
 <pre>
@@ -111,7 +111,7 @@ Application.ensure_all_started(:mongodb)
   <i>[y_coordinate]</i>
 )
 {:ok, factory} = Database.get_closest_factory(
-  coordinates #optional,<i>[radius]</i> 
+  coordinates #optional,<i>[max_radius]</i> 
 )
 {:ok, factory} = factory |> Map.from_struct() |> Jason.encode()
 IO.puts(factory)
@@ -121,5 +121,5 @@ IO.puts(factory)
 <ul>
   <li>x_coordinate - The x coordinate of the origin</l1>
   <li>y_coordinate - The y coordinate of the origin</l1>
-  <li>radius - The search area in kilometers</l1>
+  <li>max_radius - The search area in kilometers</l1>
 </ul>

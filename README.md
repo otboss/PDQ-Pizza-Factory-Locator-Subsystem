@@ -29,8 +29,6 @@ PizzaFactoryLocator.set_config(
 )
 ''';
 </pre>
-<br>
-<br>
 <h4>Parameters</h4>
 <ul>
   <li>mongo_database_address - The IP address of the Mongo Database server</li>
@@ -90,8 +88,6 @@ Application.ensure_all_started(:mongodb)
 {:ok, _} = Database.save_factory(factory)
 ''';
 </pre>
-<br>
-<br>
 <h4>Parameters</h4>
 <ul>
   <li>x_coordinate - The x coordinate of the factory</li>
@@ -121,8 +117,6 @@ Application.ensure_all_started(:mongodb)
 IO.puts(factory)
 ''';
 </pre>
-<br>
-<br>
 <h4>Parameters</h4>
 <ul>
   <li>x_coordinate - The x coordinate of the origin</l1>

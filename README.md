@@ -18,14 +18,14 @@ Updates the configuration. Enter the corresponding information of the mongo data
 <pre>
 _build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 PizzaFactoryLocator.set_config(
-  <i>[mongo_database_address]</i>,
-  <i>[mongo_database_username]</i>,
-  <i>[mongo_database_password]</i>,
-  <i>[mongo_database_port]</i>,
-  <i>[orders_collection_name]</i>,
-  <i>[factories_collection_name]</i>,
-  <i>[latitude_field_name]</i>,
-  <i>[longitude_field_name]</i>
+  <b><i>mongo_database_address</i></b>,
+  <b><i>mongo_database_username</i></b>,
+  <b><i>mongo_database_password</i></b>,
+  <b><i>mongo_database_port</i></b>,
+  <b><i>orders_collection_name</i></b>,
+  <b><i>factories_collection_name</i></b>,
+  <b><i>latitude_field_name</i></b>,
+  <b><i>longitude_field_name</i></b>
 )
 ''';
 </pre>
@@ -77,13 +77,13 @@ _build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 Application.ensure_all_started(:mongodb)
 {:ok, _} = Database.connect()
 {:ok, coordinates} = Coordinates.constructor(
-  <i>[x_coordinate]</i>,
-  <i>[y_coordinate]</i>
+  <b><i>x_coordinate</i></b>,
+  <b><i>y_coordinate</i></b>
 )
 {:ok, factory} = Factory.constructor(
-  <i>[factory_name]</i>,
+  <b><i>factory_name</i></b>,
   coordinates,
-  <i>[phone_number]</i>,
+  <b><i>phone_number</i></b>,
 )
 {:ok, _} = Database.save_factory(factory)
 ''';
@@ -107,11 +107,11 @@ _build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 Application.ensure_all_started(:mongodb)
 {:ok, _} = Database.connect()
 {:ok, coordinates} = Coordinates.constructor(
-  <i>[x_coordinate]</i>,
-  <i>[y_coordinate]</i>
+  <b><i>x_coordinate</i></b>,
+  <b><i>y_coordinate</i></b>
 )
 {:ok, factory} = Database.get_closest_factory(
-  coordinates, <i>[max_radius]</i> #optional, remove or replace with <b>nil</b> if to be ignored
+  coordinates, <b><i>max_radius</i></b> #optional, remove or replace with <i>nil</i> if to be ignored
 )
 {:ok, factory} = factory |> Map.from_struct() |> Jason.encode()
 IO.puts(factory)

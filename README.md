@@ -63,7 +63,7 @@ Reads all the Pizza Orders from the database and, using the coordinates for each
 <pre>
 _build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 Application.ensure_all_started(:mongodb)
-Database.connect()
+{:ok, _} = Database.connect()
 PizzaFactoryLocator.determine_new_factory_location() |> IO.inspect()
 ''';
 </pre>
@@ -76,7 +76,7 @@ Saves a Factory to the database.
 <pre>
 _build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 Application.ensure_all_started(:mongodb)
-Database.connect()
+{:ok, _} = Database.connect()
 {:ok, coordinates} = Coordinates.constructor(
   [x_coordinate],
   [y_coordinate]
@@ -107,7 +107,7 @@ Gets the nearest factory to supplied coordinates. Takes an optional radius param
 <pre>
 _build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 Application.ensure_all_started(:mongodb)
-Database.connect()
+{:ok, _} = Database.connect()
 {:ok, coordinates} = Coordinates.constructor(
   [x_coordinate],
   [y_coordinate]

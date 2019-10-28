@@ -86,7 +86,7 @@ Application.ensure_all_started(:mongodb)
   coordinates,
   [phone_number],
 )
-Database.save_factory(factory)
+{:ok, _} = Database.save_factory(factory)
 ''';
 </pre>
 <br>

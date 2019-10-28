@@ -71,7 +71,7 @@ defmodule PizzaFactoryLocator do
       )
 
     {:ok, config} = Map.from_struct(config) |> Jason.encode()
-    File.write(@config_directory, config)
+    File.write!(@config_directory, config)
   end
 
   @doc """

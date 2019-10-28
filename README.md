@@ -18,19 +18,20 @@ Updates the configuration. Enter the corresponding information of the mongo data
 <pre>
 _build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 PizzaFactoryLocator.set_config(
-  [mongo_database_address],
-  [mongo_database_username],
-  [mongo_database_password],
-  [mongo_database_port],
-  [orders_collection_name],
-  [factories_collection_name],
-  [latitude_field_name],
-  [longitude_field_name]
+  <i>[mongo_database_address]</i>,
+  <i>[mongo_database_username]</i>,
+  <i>[mongo_database_password]</i>,
+  <i>[mongo_database_port]</i>,
+  <i>[orders_collection_name]</i>,
+  <i>[factories_collection_name]</i>,
+  <i>[latitude_field_name]</i>,
+  <i>[longitude_field_name]</i>
 )
 ''';
 </pre>
 <br>
 <br>
+<h4>Parameters</h4>
 <ul>
   <li>mongo_database_address - The IP address of the Mongo Database server</li>
   <li>mongo_database_username - The Auth Username of the Mongo Database server</li>
@@ -78,19 +79,20 @@ _build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 Application.ensure_all_started(:mongodb)
 {:ok, _} = Database.connect()
 {:ok, coordinates} = Coordinates.constructor(
-  [x_coordinate],
-  [y_coordinate]
+  <i>[x_coordinate]</i>,
+  <i>[y_coordinate]</i>
 )
 {:ok, factory} = Factory.constructor(
-  [factory_name],
+  <i>[factory_name]</i>,
   coordinates,
-  [phone_number],
+  <i>[phone_number]</i>,
 )
 {:ok, _} = Database.save_factory(factory)
 ''';
 </pre>
 <br>
 <br>
+<h4>Parameters</h4>
 <ul>
   <li>x_coordinate - The x coordinate of the factory</li>
   <li>y_coordinate - The y coordinate of the factory</li>
@@ -109,11 +111,11 @@ _build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 Application.ensure_all_started(:mongodb)
 {:ok, _} = Database.connect()
 {:ok, coordinates} = Coordinates.constructor(
-  [x_coordinate],
-  [y_coordinate]
+  <i>[x_coordinate]</i>,
+  <i>[y_coordinate]</i>
 )
 {:ok, factory} = Database.get_closest_factory(
-  coordinates, [radius] #optional
+  coordinates, <i>[radius]</i> #optional
 )
 {:ok, factory} = factory |> Map.from_struct() |> Jason.encode()
 IO.puts(factory)
@@ -121,6 +123,7 @@ IO.puts(factory)
 </pre>
 <br>
 <br>
+<h4>Parameters</h4>
 <ul>
   <li>x_coordinate - The x coordinate of the origin</l1>
   <li>y_coordinate - The y coordinate of the origin</l1>

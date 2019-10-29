@@ -83,7 +83,7 @@ Application.ensure_all_started(:mongodb)
 {:ok, factory} = Factory.constructor(
   <b><i>factory_name</i></b>,
   coordinates,
-  <b><i>phone_number</i></b>,
+  <b><i>phone_number</i></b>
 )
 {:ok, _} = Database.save_factory(factory)
 ''';

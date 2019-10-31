@@ -126,11 +126,7 @@ Application.ensure_all_started(:mongodb)
   <b><i>x_coordinate</i></b>,
   <b><i>y_coordinate</i></b>
 )
-{:ok, factory} = Database.get_closest_factory(
-  coordinates, 
-  <b><i>max_radius</i></b> #optional, remove or replace with <i>nil</i> if to be ignored
-)
-{:ok, factory} = factory |> Map.from_struct() |> Jason.encode()
+{:ok, factory} = Database.get_closest_factory(coordinates)
 IO.puts(factory)
 ''';
 </pre>
@@ -138,5 +134,4 @@ IO.puts(factory)
 <ul>
   <li>x_coordinate - The x coordinate of the origin</l1>
   <li>y_coordinate - The y coordinate of the origin</l1>
-  <li>max_radius - The search area in kilometers</l1>
 </ul>

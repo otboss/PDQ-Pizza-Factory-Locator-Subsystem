@@ -16,6 +16,7 @@ defmodule PizzaFactoryLocator do
   @new_value "new_value"
   @old_value "old_value"
   @current_results "current_results"
+  @closest_factory "closest_factory"
   @config_directory "./config/config.json"
 
   @doc """
@@ -158,6 +159,96 @@ defmodule PizzaFactoryLocator do
     {:ok, result_json} = Jason.encode(result)
     File.write(@result_file, result_json)
     result
+  end
+
+  @doc """
+  Calculates the shortest distance between the current location (origin) and a
+  factory. Visit the following URL for mathematical assistance:
+  https://www.mathwarehouse.com/algebra/distance_formula/index.php
+  """
+  def get_closest_factory(origin) do
+    origin.__struct__ == Coordinates ||
+      raise "Invalid origin provided"
+
+    {:ok, factory_cnt} = Database.get_factory_count()
+
+    chunks = (factory_cnt / @chunk_size) |> ceil()
+
+    try do
+      :ets.new(:buckets_registry, [:named_table, :set, :public])
+    rescue
+      _ ->
+        nil
+    end
+
+    :ets.insert(
+      :buckets_registry,
+      {@closest_factory, [nil, nil]}
+    )
+
+    # Initialize old_value and new_value to a random number
+    Enum.each([@old_value, @new_value], fn value ->
+      :ets.insert(
+        :buckets_registry,
+        {value, Enum.random(1..(:math.pow(2, 256) |> ceil()))}
+      )
+    end)
+
+    Enum.each(0..chunks, fn x ->
+      {:ok, factories} = Database.get_factories(@chunk_size * x, @chunk_size * x + @chunk_size)
+
+      Enum.each(factories, fn factory ->
+        spawn(fn ->
+          # Generates and stores a random integer globally. It is very unlikely that
+          # the same number will repeat. If "new_value" remains unchanged after x seconds
+          # then the program will assume that all orders have been processed and finalize
+          :ets.insert(
+            :buckets_registry,
+            {@new_value, Enum.random(1..(:math.pow(2, 256) |> ceil()))}
+          )
+
+          current_result =
+            :ets.lookup(:buckets_registry, @closest_factory) |> Enum.at(0) |> elem(1)
+
+          distance =
+            :math.sqrt(
+              :math.pow(origin.x - factory.coordinates.x, 2) +
+                :math.pow(origin.y - factory.coordinates.y, 2)
+            )
+
+          if current_result == [nil, nil] do
+            :ets.insert(
+              :buckets_registry,
+              {@closest_factory,
+               [
+                 factory |> Map.from_struct(),
+                 distance
+               ]}
+            )
+          else
+            if current_result |> Enum.at(1) > distance do
+              :ets.insert(
+                :buckets_registry,
+                {@closest_factory,
+                 [
+                   factory |> Map.from_struct(),
+                   distance
+                 ]}
+              )
+            end
+          end
+        end)
+
+        throttler()
+      end)
+    end)
+
+    # Since all the functions are being processed concurrently a function
+    # will be needed to pause until all orders have been processed.
+    # This function call pauses the return until all orders have been processed.
+    checker()
+
+    :ets.lookup(:buckets_registry, @closest_factory) |> Enum.at(0) |> elem(1)
   end
 
   # Limits the amount of running processes in order to prevent the host machine from crashing.

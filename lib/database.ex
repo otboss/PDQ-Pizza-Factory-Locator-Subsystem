@@ -32,6 +32,18 @@ defmodule Database do
   end
 
   @doc """
+  Gets the number of factories from the database
+  """
+  def get_factory_count() do
+    try do
+      {:ok, config} = PizzaFactoryLocator.get_config()
+      Mongo.count_documents(:db_connection, config.factories_collection, %{})
+    rescue
+      x -> {:error, x}
+    end
+  end
+
+  @doc """
   Fetches orders from the database. Returns an array of Order structs. Orders
   from a particular area may be fetched by passing zone parameters. Start coordinates
   indicate the top left of a geographical area while end coordinates indicate the
@@ -90,16 +102,60 @@ defmodule Database do
          )
          |> Enum.to_list()
          |> Enum.map(fn order_json ->
-           {:ok, coordinates} =
-             Coordinates.constructor(
-               order_json["coordinates"]["x"],
-               order_json["coordinates"]["y"]
-             )
+           try do
+             {:ok, coordinates} =
+               Coordinates.constructor(
+                 order_json["coordinates"]["x"],
+                 order_json["coordinates"]["y"]
+               )
 
-           {:ok, order} = Order.constructor(coordinates)
-           order
+             {:ok, order} = Order.constructor(coordinates)
+             order
+           rescue
+             _ -> nil
+           end
          end)}
       end
+    rescue
+      x -> {:error, x}
+    end
+  end
+
+  def get_factories(start_index, stop_index)
+      when is_integer(start_index) and is_integer(stop_index) do
+    try do
+      {:ok, config} = PizzaFactoryLocator.get_config()
+
+      {:ok,
+       Mongo.find(
+         :db_connection,
+         config.factories_collection,
+         %{},
+         skip: start_index,
+         limit: stop_index - start_index
+       )
+       |> Enum.to_list()
+       |> Enum.map(fn factory_json ->
+         try do
+           {:ok, coordinates} =
+             Coordinates.constructor(
+               factory_json["coordinates"]["x"],
+               factory_json["coordinates"]["y"]
+             )
+
+           {:ok, factory} =
+             Factory.constructor(
+               factory_json["name"],
+               coordinates,
+               factory_json["phone"]
+             )
+
+           factory
+         rescue
+           _ ->
+             nil
+         end
+       end)}
     rescue
       x -> {:error, x}
     end

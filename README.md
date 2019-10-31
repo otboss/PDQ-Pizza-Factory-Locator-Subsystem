@@ -24,9 +24,7 @@ PizzaFactoryLocator.set_config(
   <b><i>mongo_database_password</i></b>,
   <b><i>mongo_database_port</i></b>,
   <b><i>orders_collection_name</i></b>,
-  <b><i>factories_collection_name</i></b>,
-  <b><i>latitude_field_name</i></b>,
-  <b><i>longitude_field_name</i></b>
+  <b><i>factories_collection_name</i></b>
 )
 ''';
 </pre>
@@ -38,8 +36,6 @@ PizzaFactoryLocator.set_config(
   <li>mongo_database_port - The port number of the Mongo Database Server</li>
   <li>orders_collection_name - The name given to the collection used to store pizza orders</li>
   <li>factories_collection_name - The name given to the collection used to store factories</li>
-  <li>latitude_field_name - The name of the latitude field within each collection document</li>
-  <li>longitude_field_name - The name of the longitude field within each collection document</li>
 </ul>
 <br>
 <h3>2. Get Configuration</h3>

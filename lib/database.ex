@@ -58,10 +58,10 @@ defmodule Database do
              config.orders_collection,
              %{
                "$and": [
-                 %{"#{config.latitude_field}": %{"$gte": zone_coordinates_start.x}},
-                 %{"#{config.longitude_field}": %{"$lte": zone_coordinates_start.y}},
-                 %{"#{config.latitude_field}": %{"$lte": zone_coordinates_stop.x}},
-                 %{"#{config.longitude_field}": %{"$gte": zone_coordinates_stop.y}}
+                 %{x: %{"$gte": zone_coordinates_start.x}},
+                 %{y: %{"$lte": zone_coordinates_start.y}},
+                 %{x: %{"$lte": zone_coordinates_stop.x}},
+                 %{y: %{"$gte": zone_coordinates_stop.y}}
                ]
              },
              skip: start_index,
@@ -175,13 +175,13 @@ defmodule Database do
                    "$add": [
                      %{
                        "$pow": [
-                         %{"$substract": ["$#{config.latitude_field}", coordinates.x]},
+                         %{"$substract": ["$x", coordinates.x]},
                          2
                        ]
                      },
                      %{
                        "$pow": [
-                         %{"$substract": ["$#{config.longitude_field}", coordinates.y]},
+                         %{"$substract": ["$y", coordinates.y]},
                          2
                        ]
                      }

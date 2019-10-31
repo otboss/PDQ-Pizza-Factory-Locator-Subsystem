@@ -119,8 +119,11 @@ Application.ensure_all_started(:mongodb)
 #   <b><i>boundary_stop_x</i></b>,
 #   <b><i>boundary_stop_y</i></b> 
 # )
+##################################################
+# REMOVE THE LINES BELOW TO USE OPTIONAL PARAMS
 boundary_start = nil;
 boundary_stop = nil;
+###############################################
 PizzaFactoryLocator.determine_new_factory_location(
   boundary_start,
   boundary_stop

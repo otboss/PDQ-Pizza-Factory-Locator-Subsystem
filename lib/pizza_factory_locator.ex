@@ -177,7 +177,7 @@ defmodule PizzaFactoryLocator do
 
     old_value == new_value ||
       (
-        Process.sleep(2000)
+        Process.sleep(1000)
 
         :ets.insert(
           :buckets_registry,

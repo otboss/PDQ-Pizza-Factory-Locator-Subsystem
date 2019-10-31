@@ -70,10 +70,10 @@ defmodule Database do
              config.orders_collection,
              %{
                "$and": [
-                 %{x: %{"$gte": zone_coordinates_start.x}},
-                 %{y: %{"$lte": zone_coordinates_start.y}},
-                 %{x: %{"$lte": zone_coordinates_stop.x}},
-                 %{y: %{"$gte": zone_coordinates_stop.y}}
+                 %{"coordinates.x": %{"$gte": zone_coordinates_start.x}},
+                 %{"coordinates.y": %{"$lte": zone_coordinates_start.y}},
+                 %{"coordinates.x": %{"$lte": zone_coordinates_stop.x}},
+                 %{"coordinates.y": %{"$gte": zone_coordinates_stop.y}}
                ]
              },
              skip: start_index,

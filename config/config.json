@@ -1,10 +1,1 @@
-{
-    "mongo_address": "",
-    "mongo_username": "",
-    "mongo_password": "",
-    "mongo_port": 27017,
-    "orders_collection": "",
-    "factories_collection": "",
-    "latitude_field": "",
-    "longitude_field": ""
-}
+{"factories_collection":"factories","latitude_field":"x","longitude_field":"y","mongo_address":"localhost","mongo_database":"test","mongo_password":"password","mongo_port":27017,"mongo_username":"admin","orders_collection":"orders"}

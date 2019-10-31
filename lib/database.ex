@@ -10,7 +10,8 @@ defmodule Database do
     {:ok, _} =
       Mongo.start_link(
         name: :db_connection,
-        database: config.mongo_address,
+        hostname: config.mongo_address,
+        database: config.mongo_database,
         port: config.mongo_port,
         username: config.mongo_username,
         password: config.mongo_password,
@@ -99,6 +100,26 @@ defmodule Database do
   end
 
   @doc """
+  Saves an order to the database
+  """
+  def save_order(order) when is_map(order) do
+    try do
+      {:ok, config} = PizzaFactoryLocator.get_config()
+
+      order.__struct__ == Order ||
+        raise "Invalid order provided"
+
+      Mongo.insert_one(
+        :db_connection,
+        config.orders_collection,
+        order |> Map.from_struct()
+      )
+    rescue
+      x -> {:error, x}
+    end
+  end
+
+  @doc """
   Saves a factory to the database
   """
   def save_factory(factory) when is_map(factory) do
@@ -108,8 +129,11 @@ defmodule Database do
       factory.__struct__ == Factory ||
         raise "invalid factory provided"
 
-      factory = Map.from_struct(factory)
-      Mongo.insert_one(:db_connection, config.factories_collection, factory)
+      Mongo.insert_one(
+        :db_connection,
+        config.factories_collection,
+        factory |> Map.from_struct()
+      )
     rescue
       x -> {:error, x}
     end

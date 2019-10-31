@@ -14,7 +14,7 @@ defmodule Factory do
       {:ok,
        %Factory{
          name: name,
-         coordinates: coordinates,
+         coordinates: coordinates |> Map.from_struct(),
          phone: phone
        }}
     rescue

@@ -8,6 +8,11 @@ defmodule PizzaFactoryLocator.MixProject do
       elixir: "~> 1.9",
       start_permanent: Mix.env() == :prod,
       deps: deps()
+      # releases: [
+      #   prod: [
+      #     include_executables_for: [:unix, :windows]
+      #   ]
+      # ]
     ]
   end
 

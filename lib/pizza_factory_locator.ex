@@ -27,6 +27,7 @@ defmodule PizzaFactoryLocator do
 
     Configuration.constructor(
       config["mongo_address"],
+      config["mongo_database"],
       config["mongo_username"],
       config["mongo_password"],
       config["mongo_port"],
@@ -42,6 +43,7 @@ defmodule PizzaFactoryLocator do
   """
   def set_config(
         mongo_address,
+        mongo_database,
         mongo_username,
         mongo_password,
         mongo_port,
@@ -51,6 +53,7 @@ defmodule PizzaFactoryLocator do
         longitude_field
       )
       when is_bitstring(mongo_address) and
+             is_bitstring(mongo_database) and
              is_bitstring(mongo_username) and
              is_bitstring(mongo_password) and
              is_integer(mongo_port) and
@@ -61,6 +64,7 @@ defmodule PizzaFactoryLocator do
     {:ok, config} =
       Configuration.constructor(
         mongo_address,
+        mongo_database,
         mongo_username,
         mongo_password,
         mongo_port,

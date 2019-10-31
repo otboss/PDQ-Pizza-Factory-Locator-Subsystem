@@ -1,6 +1,6 @@
 # PizzaFactoryLocator
 
-This application is the finished product of the Pizza Delivered Quickly Factory Locator Subsystem. This module has been compiled to erlang byte code for windows and unix-like operating systems. Provided below is the documentation on how to use this module.
+This application is the finished product of the Pizza Delivered Quickly Factory Locator Subsystem. This module was written in Elixir and as such has been compiled to erlang byte code for windows and unix-like operating systems. Provided below is the documentation on how to use this module.
 <br>
 <br>
 Reference: https://people.uwec.edu/sulzertj/Teaching/is455/Resources/PizzaDeliveryQuickly_Case_Study.pdf
@@ -19,6 +19,7 @@ Updates the configuration. Enter the corresponding information of the mongo data
 _build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 PizzaFactoryLocator.set_config(
   <b><i>mongo_database_address</i></b>,
+  <b><i>mongo_database_name</i></b>,
   <b><i>mongo_database_username</i></b>,
   <b><i>mongo_database_password</i></b>,
   <b><i>mongo_database_port</i></b>,
@@ -32,8 +33,8 @@ PizzaFactoryLocator.set_config(
 <h4>Parameters</h4>
 <ul>
   <li>mongo_database_address - The IP address of the Mongo Database server</li>
-  <li>mongo_database_username - The Auth Username of the Mongo Database server</li>
-  <li>mongo_database_password - The Auth Password of the Mongo Database server</li>
+  <li>mongo_database_name - The name of the Mongo Database</li>
+  <li>mongo_database_password - The Auth Password of the Mongo Database</li>
   <li>mongo_database_port - The port number of the Mongo Database Server</li>
   <li>orders_collection_name - The name given to the collection used to store pizza orders</li>
   <li>factories_collection_name - The name given to the collection used to store factories</li>
@@ -123,4 +124,30 @@ IO.puts(factory)
   <li>x_coordinate - The x coordinate of the origin</l1>
   <li>y_coordinate - The y coordinate of the origin</l1>
   <li>max_radius - The search area in kilometers</l1>
+</ul>
+<br>
+<br>
+<br>
+<h3>6. Save Order</h3>
+Saves the coordinates of an order to the Database
+<br>
+<br>
+<pre>
+_build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
+Application.ensure_all_started(:mongodb)
+{:ok, _} = Database.connect()
+{:ok, coordinates} = Coordinates.constructor(
+  <b><i>x_coordinate</i></b>,
+  <b><i>y_coordinate</i></b>
+)
+{:ok, order} = Order.constructor(
+  coordinates
+)
+Database.save_order(order)
+''';
+</pre>
+<h4>Parameters</h4>
+<ul>
+  <li>x_coordinate - The x coordinate of the order</l1>
+  <li>y_coordinate - The y coordinate of the order</l1>
 </ul>

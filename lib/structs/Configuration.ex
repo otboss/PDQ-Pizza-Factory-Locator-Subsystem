@@ -1,5 +1,6 @@
 defmodule Configuration do
   defstruct mongo_address: nil,
+            mongo_database: nil,
             mongo_username: nil,
             mongo_password: nil,
             mongo_port: nil,
@@ -10,6 +11,7 @@ defmodule Configuration do
 
   def constructor(
         mongo_address,
+        mongo_database,
         mongo_username,
         mongo_password,
         mongo_port,
@@ -20,6 +22,7 @@ defmodule Configuration do
       )
       when is_bitstring(mongo_address) and
              is_bitstring(mongo_username) and
+             is_bitstring(mongo_database) and
              is_bitstring(mongo_password) and
              is_integer(mongo_port) and
              is_bitstring(orders_collection) and
@@ -30,6 +33,7 @@ defmodule Configuration do
      %Configuration{
        :mongo_address => mongo_address,
        :mongo_username => mongo_username,
+       :mongo_database => mongo_database,
        :mongo_password => mongo_password,
        :mongo_port => mongo_port,
        :orders_collection => orders_collection,

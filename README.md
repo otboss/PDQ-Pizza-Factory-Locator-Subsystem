@@ -110,9 +110,29 @@ Reads all the Pizza Orders from the database and, using the coordinates for each
 _build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 Application.ensure_all_started(:mongodb)
 {:ok, _} = Database.connect()
-PizzaFactoryLocator.determine_new_factory_location() |> IO.inspect()
+# {:ok, boundary_start} = Coordinates.constructor(
+#   <b><i>boundary_start_x</i></b>,
+#   <b><i>boundary_start_y</i></b>
+# )
+# {:ok, boundary_stop} = Coordinates.constructor(
+#   <b><i>boundary_stop_x</i></b>,
+#   <b><i>boundary_stop_y</i></b> 
+# )
+boundary_start = nil;
+boundary_stop = nil;
+PizzaFactoryLocator.determine_new_factory_location(
+  boundary_start,
+  boundary_stop
+) |> IO.inspect()
 ''';
 </pre>
+<h4>Parameters</h4>
+<ul>
+  <li>boundary_start_x - (Optional) The start x coordinate of a new factory area</li>
+  <li>boundary_start_x - (Optional) The start y coordinate of a new factory area</li>
+  <li>boundary_stop_x - (Optional) The stop x coordinate of a new factory area</li>
+  <li>boundary_stop_y - (Optional) The stop y coordinate of a new factory area</li>
+</ul>
 <br>
 <h3>6. Get Closest Factory</h3>
 Gets the nearest factory to supplied coordinates. Takes an optional max radius parameter measured in kilometers.

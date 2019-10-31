@@ -83,8 +83,24 @@ defmodule PizzaFactoryLocator do
   mathematical assistance:
   https://stackoverflow.com/questions/6671183/calculate-the-center-point-of-multiple-latitude-longitude-coordinate-pairs
   """
-  def determine_new_factory_location do
+  def determine_new_factory_location(boundary_start \\ nil, boundary_stop \\ nil) do
     {:ok, order_cnt} = Database.get_order_count()
+
+    if !is_nil(boundary_start) or !is_nil(boundary_stop) do
+      if is_map(boundary_start) do
+        boundary_start.__struct__ == Coordinates ||
+          raise("Invalid boundary start provided")
+      else
+        raise("Invalid boundary start provided")
+      end
+
+      if is_map(boundary_stop) do
+        boundary_stop.__struct__ == Coordinates ||
+          raise("Invalid boundary stop provided")
+      else
+        raise("Invalid boundary stop provided")
+      end
+    end
 
     chunks = (order_cnt / @chunk_size) |> ceil()
 
@@ -109,7 +125,15 @@ defmodule PizzaFactoryLocator do
     end)
 
     Enum.each(0..chunks, fn x ->
-      {:ok, orders} = Database.get_orders(@chunk_size * x, @chunk_size * x + @chunk_size)
+      {:ok, orders} =
+        (!is_nil(boundary_start) && !is_nil(boundary_stop) &&
+           Database.get_orders(
+             @chunk_size * x,
+             @chunk_size * x + @chunk_size,
+             boundary_start,
+             boundary_stop
+           )) ||
+          Database.get_orders(@chunk_size * x, @chunk_size * x + @chunk_size)
 
       Enum.each(orders, fn order ->
         spawn(fn ->

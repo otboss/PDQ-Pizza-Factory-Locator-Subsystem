@@ -42,7 +42,6 @@ PizzaFactoryLocator.set_config(
   <li>longitude_field_name - The name of the longitude field within each collection document</li>
 </ul>
 <br>
-<br>
 <h3>2. Get Configuration</h3>
 This command reads the configuration from file and prints it to the console.
 <br>
@@ -54,8 +53,6 @@ _build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 IO.puts(config)
 ''';
 </pre>
-<br>
-<br>
 <br>
 <h3>3. Save Order</h3>
 Saves the coordinates of an order to the Database
@@ -80,7 +77,6 @@ Database.save_order(order)
   <li>x_coordinate - The x coordinate of the order</l1>
   <li>y_coordinate - The y coordinate of the order</l1>
 </ul>
-<br>
 <br>
 <h3>4. Save Factory</h3>
 Saves a Factory to the database.
@@ -109,8 +105,6 @@ Application.ensure_all_started(:mongodb)
   <li>factory_name - The name of the factory</li>
   <li>phone_number - The phone number of the factory</li>
 </ul>
-
-<br>
 <br>
 <h3>5. Determine New Pizza Factory Location</h3>
 Reads all the Pizza Orders from the database and, using the coordinates for each order, calculates the ideal location to place a new pizza factory.
@@ -123,8 +117,6 @@ Application.ensure_all_started(:mongodb)
 PizzaFactoryLocator.determine_new_factory_location() |> IO.inspect()
 ''';
 </pre>
-<br>
-<br>
 <br>
 <h3>6. Get Closest Factory</h3>
 Gets the nearest factory to supplied coordinates. Takes an optional max radius parameter measured in kilometers.

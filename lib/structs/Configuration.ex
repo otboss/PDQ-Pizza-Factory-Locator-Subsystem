@@ -5,9 +5,7 @@ defmodule Configuration do
             mongo_password: nil,
             mongo_port: nil,
             orders_collection: nil,
-            factories_collection: nil,
-            latitude_field: nil,
-            longitude_field: nil
+            factories_collection: nil
 
   def constructor(
         mongo_address,

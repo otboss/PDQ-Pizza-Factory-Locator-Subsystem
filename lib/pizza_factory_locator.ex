@@ -190,7 +190,7 @@ defmodule PizzaFactoryLocator do
   factory. Visit the following URL for mathematical assistance:
   https://www.mathwarehouse.com/algebra/distance_formula/index.php
   """
-  def get_closest_factory(origin) do
+  def get_closest_factory(origin) when is_map(origin) do
     origin.__struct__ == Coordinates ||
       raise "Invalid origin provided"
 

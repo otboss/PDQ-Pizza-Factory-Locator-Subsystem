@@ -1,6 +1,6 @@
 # PizzaFactoryLocator
 
-This application is the finished product of the Pizza Delivered Quickly Factory Locator Subsystem. This module was written in Elixir and as such has been compiled to erlang byte code for windows and unix-like operating systems. Provided below is the documentation on how to use this module.
+This application is the finished product of the Pizza Delivered Quickly Factory Locator Subsystem. This module was written in Elixir and as such has been compiled to Erlang byte code for windows and unix-like operating systems. Provided below is the documentation on how to use this module.
 <br>
 <br>
 Reference: https://people.uwec.edu/sulzertj/Teaching/is455/Resources/PizzaDeliveryQuickly_Case_Study.pdf
@@ -51,7 +51,7 @@ IO.puts(config)
 </pre>
 <br>
 <h3>3. Save Order</h3>
-Saves the coordinates of an order to the Database
+Saves the coordinates of an order to the database
 <br>
 <br>
 <pre>

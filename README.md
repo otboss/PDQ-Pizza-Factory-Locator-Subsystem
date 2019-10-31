@@ -126,7 +126,7 @@ Application.ensure_all_started(:mongodb)
   <b><i>x_coordinate</i></b>,
   <b><i>y_coordinate</i></b>
 )
-{:ok, factory} = Database.get_closest_factory(coordinates)
+{:ok, factory} = PizzaFactoryLocator.get_closest_factory(coordinates)
 IO.puts(factory)
 ''';
 </pre>

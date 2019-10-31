@@ -110,6 +110,7 @@ Reads all the Pizza Orders from the database and, using the coordinates for each
 _build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 Application.ensure_all_started(:mongodb)
 {:ok, _} = Database.connect()
+# UNCOMMENT THE LINES BELOW TO USE OPTIONAL PARAMS
 # {:ok, boundary_start} = Coordinates.constructor(
 #   <b><i>boundary_start_x</i></b>,
 #   <b><i>boundary_start_y</i></b>

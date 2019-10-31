@@ -56,17 +56,30 @@ IO.puts(config)
 </pre>
 <br>
 <br>
-<h3>3. Determine New Pizza Factory Location</h3>
-Reads all the Pizza Orders from the database and, using the coordinates for each order, calculates the ideal location to place a new pizza factory.
+<br>
+<h3>3. Save Order</h3>
+Saves the coordinates of an order to the Database
 <br>
 <br>
 <pre>
 _build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 Application.ensure_all_started(:mongodb)
 {:ok, _} = Database.connect()
-PizzaFactoryLocator.determine_new_factory_location() |> IO.inspect()
+{:ok, coordinates} = Coordinates.constructor(
+  <b><i>x_coordinate</i></b>,
+  <b><i>y_coordinate</i></b>
+)
+{:ok, order} = Order.constructor(
+  coordinates
+)
+Database.save_order(order)
 ''';
 </pre>
+<h4>Parameters</h4>
+<ul>
+  <li>x_coordinate - The x coordinate of the order</l1>
+  <li>y_coordinate - The y coordinate of the order</l1>
+</ul>
 <br>
 <br>
 <h3>4. Save Factory</h3>
@@ -96,10 +109,24 @@ Application.ensure_all_started(:mongodb)
   <li>factory_name - The name of the factory</li>
   <li>phone_number - The phone number of the factory</li>
 </ul>
+
+<br>
+<br>
+<h3>5. Determine New Pizza Factory Location</h3>
+Reads all the Pizza Orders from the database and, using the coordinates for each order, calculates the ideal location to place a new pizza factory.
+<br>
+<br>
+<pre>
+_build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
+Application.ensure_all_started(:mongodb)
+{:ok, _} = Database.connect()
+PizzaFactoryLocator.determine_new_factory_location() |> IO.inspect()
+''';
+</pre>
 <br>
 <br>
 <br>
-<h3>5. Get Closest Factory</h3>
+<h3>6. Get Closest Factory</h3>
 Gets the nearest factory to supplied coordinates. Takes an optional max radius parameter measured in kilometers.
 <br>
 <br>
@@ -124,30 +151,4 @@ IO.puts(factory)
   <li>x_coordinate - The x coordinate of the origin</l1>
   <li>y_coordinate - The y coordinate of the origin</l1>
   <li>max_radius - The search area in kilometers</l1>
-</ul>
-<br>
-<br>
-<br>
-<h3>6. Save Order</h3>
-Saves the coordinates of an order to the Database
-<br>
-<br>
-<pre>
-_build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
-Application.ensure_all_started(:mongodb)
-{:ok, _} = Database.connect()
-{:ok, coordinates} = Coordinates.constructor(
-  <b><i>x_coordinate</i></b>,
-  <b><i>y_coordinate</i></b>
-)
-{:ok, order} = Order.constructor(
-  coordinates
-)
-Database.save_order(order)
-''';
-</pre>
-<h4>Parameters</h4>
-<ul>
-  <li>x_coordinate - The x coordinate of the order</l1>
-  <li>y_coordinate - The y coordinate of the order</l1>
 </ul>

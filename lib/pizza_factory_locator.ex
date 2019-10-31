@@ -32,9 +32,7 @@ defmodule PizzaFactoryLocator do
       config["mongo_password"],
       config["mongo_port"],
       config["orders_collection"],
-      config["factories_collection"],
-      config["latitude_field"],
-      config["longitude_field"]
+      config["factories_collection"]
     )
   end
 
@@ -69,9 +67,7 @@ defmodule PizzaFactoryLocator do
         mongo_password,
         mongo_port,
         order_collection,
-        factories_collection,
-        latitude_field,
-        longitude_field
+        factories_collection
       )
 
     {:ok, config} = Map.from_struct(config) |> Jason.encode()
@@ -91,7 +87,12 @@ defmodule PizzaFactoryLocator do
 
     chunks = (order_cnt / @chunk_size) |> ceil()
 
-    :ets.new(:buckets_registry, [:named_table])
+    try do
+      :ets.new(:buckets_registry, [:named_table, :set, :public])
+    rescue
+      _ ->
+        nil
+    end
 
     :ets.insert(
       :buckets_registry,
@@ -180,7 +181,7 @@ defmodule PizzaFactoryLocator do
 
         :ets.insert(
           :buckets_registry,
-          {@old_value, :ets.lookup(:buckets_registry, new_value)}
+          {@old_value, new_value}
         )
 
         # Loop until "new_value" is unchanged. If this is the case then the processing

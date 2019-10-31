@@ -14,7 +14,7 @@ defmodule Order do
 
     {:ok,
      %Order{
-       :coordinates => coordinates
+       :coordinates => coordinates |> Map.from_struct()
      }}
   end
 end

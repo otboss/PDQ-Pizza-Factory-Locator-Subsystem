@@ -32,6 +32,7 @@ PizzaFactoryLocator.set_config(
 <ul>
   <li>mongo_database_address - The IP address of the Mongo Database server</li>
   <li>mongo_database_name - The name of the Mongo Database</li>
+  <li>mongo_database_username - The Auth Username of the Mongo Database</li>
   <li>mongo_database_password - The Auth Password of the Mongo Database</li>
   <li>mongo_database_port - The port number of the Mongo Database Server</li>
   <li>orders_collection_name - The name given to the collection used to store pizza orders</li>

@@ -180,7 +180,7 @@ factories = Enum.map(factories, fn factory ->
   end
 end)
 {ok, factory_json} = Jason.encode(factories)
-factory_json
+IO.puts(factory_json)
 ''';
 </pre>
 <h4>Parameters</h4>

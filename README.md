@@ -170,7 +170,7 @@ Application.ensure_all_started(:mongodb)
 {:ok, _} = Database.connect()
 {:ok, factories} = Database.get_factories(
   <b><i>start_index</i></b>,
-  <b><i>end_index</i></b>  
+  <b><i>stop_index</i></b>  
 )
 factories = Enum.map(factories, fn factory -> 
   try do
@@ -186,5 +186,5 @@ factory_json
 <h4>Parameters</h4>
 <ul>
   <li>start_index - An integer of the factory index in the database</l1>
-  <li>end_index - An integer of the factory index in the database</l1>
+  <li>stop_index - An integer of the factory index in the database</l1>
 </ul>

@@ -125,10 +125,12 @@ Application.ensure_all_started(:mongodb)
 boundary_start = nil;
 boundary_stop = nil;
 ###############################################
-PizzaFactoryLocator.determine_new_factory_location(
+new_location = PizzaFactoryLocator.determine_new_factory_location(
   boundary_start,
   boundary_stop
-) |> IO.inspect()
+)
+{:ok, new_location} = Jason.encode(new_location)
+IO.puts(new_location)
 ''';
 </pre>
 <h4>Parameters</h4>
@@ -151,7 +153,8 @@ Application.ensure_all_started(:mongodb)
   <b><i>x_coordinate</i></b>,
   <b><i>y_coordinate</i></b>
 )
-PizzaFactoryLocator.get_closest_factory(coordinates) |> IO.inspect()
+{:ok, closest_factory} = PizzaFactoryLocator.get_closest_factory(coordinates)
+IO.put(closest_factory)
 ''';
 </pre>
 <h4>Parameters</h4>

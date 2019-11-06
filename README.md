@@ -176,7 +176,7 @@ factories = Enum.map(factories, fn factory ->
   try do
     Map.from_struct(factory)
   rescue
-    nil
+    _ -> nil
   end
 end)
 {ok, factory_json} = Jason.encode(factories)

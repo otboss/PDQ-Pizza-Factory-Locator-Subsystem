@@ -159,3 +159,32 @@ PizzaFactoryLocator.get_closest_factory(coordinates) |> IO.inspect()
   <li>x_coordinate - The x coordinate of the origin</l1>
   <li>y_coordinate - The y coordinate of the origin</l1>
 </ul>
+<br>
+<h3>7. Get Factories</h3>
+Gets a slice of factories from the database
+<br>
+<br>
+<pre>
+_build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
+Application.ensure_all_started(:mongodb)
+{:ok, _} = Database.connect()
+{:ok, factories} = Database.get_factories(
+  <b><i>start_index</i></b>,
+  <b><i>end_index</i></b>  
+)
+factories = Enum.map(factories, fn factory -> 
+  try do
+    Map.from_struct(factory)
+  rescue
+    nil
+  end
+end)
+{ok, factory_json} = Jason.encode(factories)
+factory_json
+''';
+</pre>
+<h4>Parameters</h4>
+<ul>
+  <li>start_index - An integer of the factory index in the database</l1>
+  <li>end_index - An integer of the factory index in the database</l1>
+</ul>

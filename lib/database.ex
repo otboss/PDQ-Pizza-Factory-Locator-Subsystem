@@ -157,7 +157,8 @@ defmodule Database do
          end
        end)}
     rescue
-      x -> {:error, x}
+      x ->
+        {:error, x}
     end
   end
 

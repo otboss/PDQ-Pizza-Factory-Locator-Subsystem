@@ -171,9 +171,25 @@ Gets a slice of factories from the database
 _build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 Application.ensure_all_started(:mongodb)
 {:ok, _} = Database.connect()
+# REMOVE COMMENTS TO USE OPTIONAL PARAMETERS BELOW
+# {:ok, boundary_start} = Coordinates.constructor(
+#   <b><i>boundary_start_x</i></b>,
+#   <b><i>boundary_start_y</i></b>
+# )
+# {:ok, boundary_stop} = Coordinates.constructor(
+#   <b><i>boundary_stop_x</i></b>,
+#   <b><i>boundary_stop_y</i></b> 
+# )
+##################################################
+# COMMENT OUT TO USE OPTIONAL PARAMS
+boundary_start = nil
+boundary_stop = nil
+####################################
 {:ok, factories} = Database.get_factories(
   <b><i>start_index</i></b>,
-  <b><i>stop_index</i></b>  
+  <b><i>stop_index</i></b> ,
+  <b><i>boundary_start</i></b>,
+  <b><i>boundary_stop</i></b>    
 )
 factories = Enum.map(factories, fn factory -> 
   try do
@@ -190,4 +206,8 @@ IO.puts(factory_json)
 <ul>
   <li>start_index - An integer of the factory index in the database</l1>
   <li>stop_index - An integer of the factory index in the database</l1>
+  <li>boundary_start_x - (Optional) The start x coordinate of the area to get factories</li>
+  <li>boundary_start_x - (Optional) The start y coordinate of the area to get factories</li>
+  <li>boundary_stop_x - (Optional) The stop x coordinate of the area to get factories </li>
+  <li>boundary_stop_y - (Optional) The stop y coordinate of the area to get factories </li>  
 </ul>

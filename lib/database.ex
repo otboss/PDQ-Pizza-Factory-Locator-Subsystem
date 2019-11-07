@@ -121,41 +121,92 @@ defmodule Database do
     end
   end
 
-  def get_factories(start_index, stop_index)
+  def get_factories(
+        start_index,
+        stop_index,
+        # OPTTIONAL: Get orders from a particular area
+        zone_coordinates_start \\ nil,
+        zone_coordinates_stop \\ nil
+      )
       when is_integer(start_index) and is_integer(stop_index) do
     try do
       {:ok, config} = PizzaFactoryLocator.get_config()
 
-      {:ok,
-       Mongo.find(
-         :db_connection,
-         config.factories_collection,
-         %{},
-         skip: start_index,
-         limit: stop_index - start_index
-       )
-       |> Enum.to_list()
-       |> Enum.map(fn factory_json ->
-         try do
-           {:ok, coordinates} =
-             Coordinates.constructor(
-               factory_json["coordinates"]["x"],
-               factory_json["coordinates"]["y"]
-             )
+      if is_map(zone_coordinates_start) && is_map(zone_coordinates_stop) do
+        if zone_coordinates_start.__struct__ == Coordinates &&
+             zone_coordinates_stop.__struct__ == Coordinates do
+          {:ok,
+           Mongo.find(
+             :db_connection,
+             config.factories_collection,
+             %{
+               "$and": [
+                 %{"coordinates.x": %{"$gte": zone_coordinates_start.x}},
+                 %{"coordinates.y": %{"$lte": zone_coordinates_start.y}},
+                 %{"coordinates.x": %{"$lte": zone_coordinates_stop.x}},
+                 %{"coordinates.y": %{"$gte": zone_coordinates_stop.y}}
+               ]
+             },
+             skip: start_index,
+             limit: stop_index - start_index
+           )
+           |> Enum.to_list()
+           |> Enum.map(fn factory_json ->
+             try do
+               {:ok, coordinates} =
+                 Coordinates.constructor(
+                   factory_json["coordinates"]["x"],
+                   factory_json["coordinates"]["y"]
+                 )
 
-           {:ok, factory} =
-             Factory.constructor(
-               factory_json["name"],
-               coordinates,
-               factory_json["phone"]
-             )
+               {:ok, factory} =
+                 Factory.constructor(
+                   factory_json["name"],
+                   coordinates,
+                   factory_json["phone"]
+                 )
 
-           factory
-         rescue
-           _ ->
-             nil
-         end
-       end)}
+               factory
+             rescue
+               _ ->
+                 nil
+             end
+           end)}
+        else
+          raise "invalid zone provided"
+        end
+      else
+        {:ok,
+         Mongo.find(
+           :db_connection,
+           config.factories_collection,
+           %{},
+           skip: start_index,
+           limit: stop_index - start_index
+         )
+         |> Enum.to_list()
+         |> Enum.map(fn factory_json ->
+           try do
+             {:ok, coordinates} =
+               Coordinates.constructor(
+                 factory_json["coordinates"]["x"],
+                 factory_json["coordinates"]["y"]
+               )
+
+             {:ok, factory} =
+               Factory.constructor(
+                 factory_json["name"],
+                 coordinates,
+                 factory_json["phone"]
+               )
+
+             factory
+           rescue
+             _ ->
+               nil
+           end
+         end)}
+      end
     rescue
       x ->
         {:error, x}

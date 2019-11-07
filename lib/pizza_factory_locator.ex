@@ -86,10 +86,6 @@ defmodule PizzaFactoryLocator do
   def determine_new_factory_location(boundary_start \\ nil, boundary_stop \\ nil) do
     {:ok, order_cnt} = Database.get_order_count()
 
-    spawn(fn ->
-      memory_coordinator()
-    end)
-
     if !is_nil(boundary_start) or !is_nil(boundary_stop) do
       if is_map(boundary_start) do
         boundary_start.__struct__ == Coordinates ||

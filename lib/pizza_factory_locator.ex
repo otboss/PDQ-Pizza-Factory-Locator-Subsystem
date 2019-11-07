@@ -7,16 +7,16 @@ defmodule PizzaFactoryLocator do
   """
 
   # The number of processes upon virtual machine boot
-  @base_process_count Process.list() |> length()
+  # @base_process_count Process.list() |> length()
   # Set the process limit based on the max available resources of the host machine
-  @process_limit 1000
-  # Set the chunk size based on the available RAM of the host machine
-  @chunk_size 1000
+  # @process_limit 1_000_000
+  # Limits the amount of factories the app can read from the database at any one
+  # moment in time. Set the chunk size based on the available RAM of the host machine
+  @chunk_size 10000
   @result_file "./output/final_result.json"
   @new_value "new_value"
   @old_value "old_value"
   @current_results "current_results"
-  @closest_factory "closest_factory"
   @config_directory "./config/config.json"
 
   @doc """
@@ -86,6 +86,10 @@ defmodule PizzaFactoryLocator do
   def determine_new_factory_location(boundary_start \\ nil, boundary_stop \\ nil) do
     {:ok, order_cnt} = Database.get_order_count()
 
+    spawn(fn ->
+      memory_coordinator()
+    end)
+
     if !is_nil(boundary_start) or !is_nil(boundary_stop) do
       if is_map(boundary_start) do
         boundary_start.__struct__ == Coordinates ||
@@ -102,7 +106,7 @@ defmodule PizzaFactoryLocator do
       end
     end
 
-    chunks = (order_cnt / @chunk_size) |> ceil()
+    thread_chunk_size = (order_cnt / System.schedulers_online()) |> ceil()
 
     try do
       :ets.new(:buckets_registry, [:named_table, :set, :public])
@@ -110,11 +114,6 @@ defmodule PizzaFactoryLocator do
       _ ->
         nil
     end
-
-    :ets.insert(
-      :buckets_registry,
-      {@current_results, [0.0, 0.0, 0.0]}
-    )
 
     # Initialize old_value and new_value to a random number
     Enum.each([@old_value, @new_value], fn value ->
@@ -124,46 +123,67 @@ defmodule PizzaFactoryLocator do
       )
     end)
 
-    Enum.each(0..chunks, fn x ->
-      {:ok, orders} =
-        (!is_nil(boundary_start) && !is_nil(boundary_stop) &&
-           Database.get_orders(
-             @chunk_size * x,
-             @chunk_size * x + @chunk_size,
-             boundary_start,
-             boundary_stop
-           )) ||
-          Database.get_orders(@chunk_size * x, @chunk_size * x + @chunk_size)
+    memory_coordinators =
+      Enum.reduce(0..(System.schedulers_online() - 1), [], fn _, acc ->
+        {:ok, mem_coord_pid} = MemoryCoordinator.start_link()
+        acc ++ [mem_coord_pid]
+      end)
 
-      Enum.each(orders, fn order ->
-        spawn(fn ->
-          # Generates and stores a random integer globally. It is very unlikely that
-          # the same number will repeat. If "new_value" remains unchanged after x seconds
-          # then the program will assume that all orders have been processed and finalize
-          :ets.insert(
-            :buckets_registry,
-            {@new_value, Enum.random(1..(:math.pow(2, 256) |> ceil()))}
-          )
+    Enum.each(0..(System.schedulers_online() - 1), fn thread ->
+      spawn(fn ->
+        range_start = thread_chunk_size * thread
+        range_stop = thread_chunk_size * thread + thread_chunk_size
+        mem_coord_pid = Enum.at(memory_coordinators, thread)
 
-          current_results =
-            :ets.lookup(:buckets_registry, @current_results) |> Enum.at(0) |> elem(1)
+        range_stop =
+          (((range_stop - thread_chunk_size) / thread_chunk_size) |> floor() ==
+             System.schedulers_online() - 1 && range_stop) || range_stop - 1
 
-          lat = order.coordinates.x * :math.pi() / 180
-          lon = order.coordinates.y * :math.pi() / 180
+        Enum.reduce_while(
+          range_start..range_stop,
+          0,
+          fn _, acc ->
+            if acc <= range_stop,
+              do:
+                (fn ->
+                   {:ok, orders} =
+                     (!is_nil(boundary_start) && !is_nil(boundary_stop) &&
+                        Database.get_orders(
+                          acc,
+                          acc + @chunk_size,
+                          boundary_start,
+                          boundary_stop
+                        )) ||
+                       Database.get_orders(acc, acc + @chunk_size)
 
-          current_results = [
-            Enum.at(current_results, 0) + :math.cos(lat) * :math.cos(lon),
-            Enum.at(current_results, 1) + :math.cos(lat) * :math.sin(lon),
-            Enum.at(current_results, 2) + :math.sin(lat)
-          ]
+                   Enum.each(orders, fn order ->
+                     # Generates and stores a random integer globally. It is very unlikely that
+                     # the same number will repeat. If "new_value" remains unchanged after x seconds
+                     # then the program will assume that all orders have been processed and finalize
+                     :ets.insert(
+                       :buckets_registry,
+                       {@new_value, Enum.random(1..(:math.pow(2, 256) |> ceil()))}
+                     )
 
-          :ets.insert(
-            :buckets_registry,
-            {@current_results, current_results}
-          )
-        end)
+                     current_results = MemoryCoordinator.get_result(mem_coord_pid)
 
-        throttler()
+                     lat = order.coordinates.x * :math.pi() / 180
+                     lon = order.coordinates.y * :math.pi() / 180
+
+                     current_results = [
+                       Enum.at(current_results, 0) + :math.cos(lat) * :math.cos(lon),
+                       Enum.at(current_results, 1) + :math.cos(lat) * :math.sin(lon),
+                       Enum.at(current_results, 2) + :math.sin(lat)
+                     ]
+
+                     MemoryCoordinator.update_result(mem_coord_pid, current_results)
+                   end)
+
+                   {:cont, acc + @chunk_size}
+                 end).(),
+              else: {:halt, acc}
+          end
+        )
       end)
     end)
 
@@ -172,7 +192,18 @@ defmodule PizzaFactoryLocator do
     # This function call pauses the return until all orders have been processed.
     checker()
 
-    result = :ets.lookup(:buckets_registry, @current_results) |> Enum.at(0) |> elem(1)
+    result =
+      Enum.reduce(0..(length(memory_coordinators) - 1), [0.0, 0.0, 0.0], fn x, acc ->
+        pid = Enum.at(memory_coordinators, x)
+        thread_result = MemoryCoordinator.get_result(pid)
+
+        _acc = [
+          Enum.at(acc, 0) + Enum.at(thread_result, 0),
+          Enum.at(acc, 1) + Enum.at(thread_result, 1),
+          Enum.at(acc, 2) + Enum.at(thread_result, 2)
+        ]
+      end)
+
     x = (result |> Enum.at(0)) / order_cnt
     y = (result |> Enum.at(1)) / order_cnt
     z = (result |> Enum.at(2)) / order_cnt
@@ -195,8 +226,7 @@ defmodule PizzaFactoryLocator do
       raise "Invalid origin provided"
 
     {:ok, factory_cnt} = Database.get_factory_count()
-
-    chunks = (factory_cnt / @chunk_size) |> ceil()
+    thread_chunk_size = (factory_cnt / System.schedulers_online()) |> ceil()
 
     try do
       :ets.new(:buckets_registry, [:named_table, :set, :public])
@@ -204,11 +234,6 @@ defmodule PizzaFactoryLocator do
       _ ->
         nil
     end
-
-    :ets.insert(
-      :buckets_registry,
-      {@closest_factory, [nil, nil]}
-    )
 
     # Initialize old_value and new_value to a random number
     Enum.each([@old_value, @new_value], fn value ->
@@ -218,52 +243,63 @@ defmodule PizzaFactoryLocator do
       )
     end)
 
-    Enum.each(0..chunks, fn x ->
-      {:ok, factories} = Database.get_factories(@chunk_size * x, @chunk_size * x + @chunk_size)
+    memory_coordinators =
+      Enum.reduce(0..(System.schedulers_online() - 1), [], fn _, acc ->
+        {:ok, mem_coord_pid} = MemoryCoordinator.start_link()
+        acc ++ [mem_coord_pid]
+      end)
 
-      Enum.each(factories, fn factory ->
-        spawn(fn ->
-          # Generates and stores a random integer globally. It is very unlikely that
-          # the same number will repeat. If "new_value" remains unchanged after x seconds
-          # then the program will assume that all orders have been processed and finalize
-          :ets.insert(
-            :buckets_registry,
-            {@new_value, Enum.random(1..(:math.pow(2, 256) |> ceil()))}
-          )
+    Enum.each(0..(System.schedulers_online() - 1), fn thread ->
+      spawn(fn ->
+        range_start = thread_chunk_size * thread
+        range_stop = thread_chunk_size * thread + thread_chunk_size
+        mem_coord_pid = Enum.at(memory_coordinators, thread)
 
-          current_result =
-            :ets.lookup(:buckets_registry, @closest_factory) |> Enum.at(0) |> elem(1)
+        range_stop =
+          (((range_stop - thread_chunk_size) / thread_chunk_size) |> floor() ==
+             System.schedulers_online() - 1 && range_stop) || range_stop - 1
 
-          distance =
-            :math.sqrt(
-              :math.pow(origin.x - factory.coordinates.x, 2) +
-                :math.pow(origin.y - factory.coordinates.y, 2)
-            )
+        Enum.reduce_while(range_start..range_stop, 0, fn _, acc ->
+          if acc <= range_stop,
+            do:
+              {:cont,
+               (fn ->
+                  {:ok, factories} =
+                    Database.get_factories(
+                      acc,
+                      acc + @chunk_size
+                    )
 
-          if current_result == [nil, nil] do
-            :ets.insert(
-              :buckets_registry,
-              {@closest_factory,
-               [
-                 factory |> Map.from_struct(),
-                 distance
-               ]}
-            )
-          else
-            if current_result |> Enum.at(1) > distance do
-              :ets.insert(
-                :buckets_registry,
-                {@closest_factory,
-                 [
-                   factory |> Map.from_struct(),
-                   distance
-                 ]}
-              )
-            end
-          end
+                  Enum.each(factories, fn factory ->
+                    :ets.insert(
+                      :buckets_registry,
+                      {@new_value, Enum.random(1..(:math.pow(2, 256) |> ceil()))}
+                    )
+
+                    current_result = MemoryCoordinator.get_closest_factory(mem_coord_pid)
+
+                    distance =
+                      :math.sqrt(
+                        :math.pow(origin.x - factory.coordinates.x, 2) +
+                          :math.pow(origin.y - factory.coordinates.y, 2)
+                      )
+
+                    (current_result == [] &&
+                       MemoryCoordinator.update_closest_factory(mem_coord_pid, [
+                         factory,
+                         distance
+                       ])) ||
+                      (current_result |> Enum.at(1) > distance &&
+                         MemoryCoordinator.update_closest_factory(mem_coord_pid, [
+                           factory,
+                           distance
+                         ]))
+                  end)
+
+                  {:cont, acc + @chunk_size}
+                end).()},
+            else: {:halt, acc}
         end)
-
-        throttler()
       end)
     end)
 
@@ -272,19 +308,26 @@ defmodule PizzaFactoryLocator do
     # This function call pauses the return until all orders have been processed.
     checker()
 
-    :ets.lookup(:buckets_registry, @closest_factory) |> Enum.at(0) |> elem(1)
+    Enum.reduce(0..(length(memory_coordinators) - 1), [], fn thread, acc ->
+      _acc =
+        (thread == 0 &&
+           MemoryCoordinator.get_closest_factory(Enum.at(memory_coordinators, thread))) ||
+          (MemoryCoordinator.get_closest_factory(Enum.at(memory_coordinators, thread))
+           |> Enum.at(1) < Enum.at(acc, 1) &&
+             MemoryCoordinator.get_closest_factory(Enum.at(memory_coordinators, thread))) || acc
+    end)
   end
 
   # Limits the amount of running processes in order to prevent the host machine from crashing.
   # This function checks if the current number of processes exceeds the process_limit and stops
   # the host machine from spawning new processes by calling itself recursively.
-  defp throttler do
-    (Process.list() |> length()) - @base_process_count >= @process_limit &&
-      (
-        Process.sleep(300)
-        throttler()
-      )
-  end
+  # defp throttler do
+  #   (Process.list() |> length()) - @base_process_count >= @process_limit &&
+  #     (
+  #       Process.sleep(300)
+  #       throttler()
+  #     )
+  # end
 
   defp checker do
     old_value = :ets.lookup(:buckets_registry, @old_value) |> Enum.at(0) |> elem(1)
@@ -303,5 +346,32 @@ defmodule PizzaFactoryLocator do
         # is complete.
         checker()
       )
+  end
+
+  @doc """
+  Shared memory. Prevents concurrent processes from writing to shared memory
+  simultaneously by using locking
+  """
+  def memory_coordinator do
+    try do
+      :ets.new(:shared_memory_registry, [:named_table, :set, :protected])
+
+      :ets.insert(
+        :shared_memory_registry,
+        {@current_results, [0.0, 0.0, 0.0]}
+      )
+    rescue
+      _ -> nil
+    end
+
+    receive do
+      result ->
+        :ets.insert(
+          :shared_memory_registry,
+          {@current_results, result}
+        )
+    end
+
+    memory_coordinator()
   end
 end

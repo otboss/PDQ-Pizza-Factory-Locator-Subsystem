@@ -308,14 +308,18 @@ defmodule PizzaFactoryLocator do
     # This function call pauses the return until all orders have been processed.
     checker()
 
-    Enum.reduce(0..(length(memory_coordinators) - 1), [], fn thread, acc ->
-      _acc =
-        (thread == 0 &&
-           MemoryCoordinator.get_closest_factory(Enum.at(memory_coordinators, thread))) ||
-          (MemoryCoordinator.get_closest_factory(Enum.at(memory_coordinators, thread))
-           |> Enum.at(1) < Enum.at(acc, 1) &&
-             MemoryCoordinator.get_closest_factory(Enum.at(memory_coordinators, thread))) || acc
-    end)
+    try do
+      Enum.reduce(0..(length(memory_coordinators) - 1), [], fn thread, acc ->
+        _acc =
+          (thread == 0 &&
+             MemoryCoordinator.get_closest_factory(Enum.at(memory_coordinators, thread))) ||
+            (MemoryCoordinator.get_closest_factory(Enum.at(memory_coordinators, thread))
+             |> Enum.at(1) < Enum.at(acc, 1) &&
+               MemoryCoordinator.get_closest_factory(Enum.at(memory_coordinators, thread))) || acc
+      end)
+    rescue
+      _ -> nil
+    end
   end
 
   # Limits the amount of running processes in order to prevent the host machine from crashing.

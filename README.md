@@ -204,8 +204,8 @@ IO.puts(factory_json)
 </pre>
 <h4>Parameters</h4>
 <ul>
-  <li>start_index - An integer of the factory index in the database</l1>
-  <li>stop_index - An integer of the factory index in the database</l1>
+  <li>start_index - An integer as the start index of factory slice from database</l1>
+  <li>stop_index - An integer as the stop index of factory slice from database</l1>
   <li>boundary_start_x - (Optional) The start x coordinate of the area to get factories</li>
   <li>boundary_start_x - (Optional) The start y coordinate of the area to get factories</li>
   <li>boundary_stop_x - (Optional) The stop x coordinate of the area to get factories </li>

@@ -181,10 +181,10 @@ Application.ensure_all_started(:mongodb)
 #   <b><i>boundary_stop_y</i></b> 
 # )
 ##################################################
-# COMMENT OUT TO USE OPTIONAL PARAMS
+# REMOVE LINES BELOW OUT TO USE OPTIONAL PARAMS
 boundary_start = nil
 boundary_stop = nil
-####################################
+###############################################
 {:ok, factories} = Database.get_factories(
   <b><i>start_index</i></b>,
   <b><i>stop_index</i></b> ,

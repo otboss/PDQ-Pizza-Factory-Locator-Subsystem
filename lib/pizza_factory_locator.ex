@@ -347,31 +347,4 @@ defmodule PizzaFactoryLocator do
         checker()
       )
   end
-
-  @doc """
-  Shared memory. Prevents concurrent processes from writing to shared memory
-  simultaneously by using locking
-  """
-  def memory_coordinator do
-    try do
-      :ets.new(:shared_memory_registry, [:named_table, :set, :protected])
-
-      :ets.insert(
-        :shared_memory_registry,
-        {@current_results, [0.0, 0.0, 0.0]}
-      )
-    rescue
-      _ -> nil
-    end
-
-    receive do
-      result ->
-        :ets.insert(
-          :shared_memory_registry,
-          {@current_results, result}
-        )
-    end
-
-    memory_coordinator()
-  end
 end

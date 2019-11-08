@@ -124,7 +124,7 @@ defmodule Database do
   def get_factories(
         start_index,
         stop_index,
-        # OPTTIONAL: Get orders from a particular area
+        # OPTTIONAL: Get factories from a particular area
         zone_coordinates_start \\ nil,
         zone_coordinates_stop \\ nil
       )

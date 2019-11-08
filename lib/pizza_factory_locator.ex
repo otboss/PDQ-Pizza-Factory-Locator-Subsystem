@@ -16,7 +16,6 @@ defmodule PizzaFactoryLocator do
   @result_file "./output/final_result.json"
   @new_value "new_value"
   @old_value "old_value"
-  @current_results "current_results"
   @config_directory "./config/config.json"
 
   @doc """

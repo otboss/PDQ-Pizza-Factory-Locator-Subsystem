@@ -142,7 +142,7 @@ IO.puts(new_location)
 </ul>
 <br>
 <h3>6. Get Closest Factory</h3>
-Gets the nearest factory to supplied coordinates. Takes an optional max radius parameter measured in kilometers.
+Gets the nearest factory to supplied coordinates.
 <br>
 <br>
 <pre>

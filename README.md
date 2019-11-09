@@ -163,7 +163,7 @@ result = PizzaFactoryLocator.get_closest_factory(coordinates)
         |> Map.merge(%{:distance => Enum.at(result, 1)})
         |> Jason.encode()
       IO.puts(result)
-    )) || nil
+    )) || IO.puts("null")
 ''';
 </pre>
 <h4>Parameters</h4>

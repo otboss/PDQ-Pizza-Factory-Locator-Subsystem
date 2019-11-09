@@ -13,7 +13,6 @@ defmodule PizzaFactoryLocator do
   # Limits the amount of factories the app can read from the database at any one
   # moment in time. Set the chunk size based on the available RAM of the host machine
   @chunk_size 10000
-  @result_file "./output/final_result.json"
   @new_value "new_value"
   @old_value "old_value"
   @config_directory "./config/config.json"
@@ -206,8 +205,6 @@ defmodule PizzaFactoryLocator do
     hyp = :math.sqrt(x * x + y * y)
     lat = :math.atan2(z, hyp)
     result = [lat * 180 / :math.pi(), lon * 180 / :math.pi()]
-    {:ok, result_json} = Jason.encode(result)
-    File.write(@result_file, result_json)
     result
   end
 

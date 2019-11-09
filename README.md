@@ -154,11 +154,18 @@ Application.ensure_all_started(:mongodb)
   <b><i>y_coordinate</i></b>
 )
 result = PizzaFactoryLocator.get_closest_factory(coordinates)
-{:ok, result} = [
-  result |> Enum.at(0) |> Map.from_struct(),
-  result |> Enum.at(1)
-] |> Jason.encode()
-IO.puts(result)
+
+(length(result) > 0 &&
+    (
+      {:ok, result} =
+        result
+        |> Enum.at(0)
+        |> Map.from_struct()
+        |> Map.merge(%{:distance => Enum.at(result, 1)})
+        |> Jason.encode()
+
+      IO.puts(result)
+    )) || nil
 ''';
 </pre>
 <h4>Parameters</h4>

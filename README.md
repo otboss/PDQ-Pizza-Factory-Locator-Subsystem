@@ -142,7 +142,7 @@ IO.puts(new_location)
 </ul>
 <br>
 <h3>6. Get Closest Factory</h3>
-Gets the nearest factory to supplied coordinates.
+Gets the nearest factory to supplied coordinates. Calculations are based on the distance between coordinates and not the length of the route to the factory.
 <br>
 <br>
 <pre>

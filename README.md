@@ -153,8 +153,12 @@ Application.ensure_all_started(:mongodb)
   <b><i>x_coordinate</i></b>,
   <b><i>y_coordinate</i></b>
 )
-{:ok, closest_factory} = PizzaFactoryLocator.get_closest_factory(coordinates)
-IO.put(closest_factory)
+result = PizzaFactoryLocator.get_closest_factory(coordinates)
+{:ok, result} = [
+  result |> Enum.at(0) |> Map.from_struct(),
+  result |> Enum.at(1)
+] |> Jason.encode()
+IO.puts(result)
 ''';
 </pre>
 <h4>Parameters</h4>

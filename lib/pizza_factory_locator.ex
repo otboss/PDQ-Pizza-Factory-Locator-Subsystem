@@ -204,8 +204,7 @@ defmodule PizzaFactoryLocator do
     lon = :math.atan2(y, x)
     hyp = :math.sqrt(x * x + y * y)
     lat = :math.atan2(z, hyp)
-    result = [lat * 180 / :math.pi(), lon * 180 / :math.pi()]
-    result
+    [lat * 180 / :math.pi(), lon * 180 / :math.pi()]
   end
 
   @doc """

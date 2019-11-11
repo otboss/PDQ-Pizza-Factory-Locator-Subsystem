@@ -8,12 +8,11 @@ Reference: https://people.uwec.edu/sulzertj/Teaching/is455/Resources/PizzaDelive
 <br>
 <h2>Command Line API Documentation</h2>
 Run the following commands within the project directory's root using the current system's shell. If you are using an operating system other than linux then replace 'linux' in the command's path to your operating system. Supported operating systems are:
+<br>
 <ul>
 	<li>windows</li>
 	<li>macos</li>
 </ul>
-<br>
-<br>
 <h3>1. Set Configuration</h3>
 <br>
 Updates the configuration. Enter the corresponding information of the mongo database server.

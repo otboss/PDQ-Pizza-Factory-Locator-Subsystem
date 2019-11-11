@@ -16,7 +16,7 @@ Updates the configuration. Enter the corresponding information of the mongo data
 <br>
 <br>
 <pre>
-_build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
+_build/release/linux/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 PizzaFactoryLocator.set_config(
   <b><i>mongo_database_address</i></b>,
   <b><i>mongo_database_name</i></b>,
@@ -44,7 +44,7 @@ This command reads the configuration from file and prints it to the console.
 <br>
 <br>
 <pre>
-_build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
+_build/release/linux/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 {:ok, config} = PizzaFactoryLocator.get_config()
 {:ok, config} = config |> Map.from_struct() |> Jason.encode()
 IO.puts(config)
@@ -56,7 +56,7 @@ Saves the coordinates of an order to the database
 <br>
 <br>
 <pre>
-_build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
+_build/release/linux/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 Application.ensure_all_started(:mongodb)
 {:ok, _} = Database.connect()
 {:ok, coordinates} = Coordinates.constructor(
@@ -80,7 +80,7 @@ Saves a Factory to the database.
 <br>
 <br>
 <pre>
-_build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
+_build/release/linux/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 Application.ensure_all_started(:mongodb)
 {:ok, _} = Database.connect()
 {:ok, coordinates} = Coordinates.constructor(
@@ -108,7 +108,7 @@ Reads all the Pizza Orders from the database and, using the coordinates for each
 <br>
 <br>
 <pre>
-_build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
+_build/release/linux/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 Application.ensure_all_started(:mongodb)
 {:ok, _} = Database.connect()
 # UNCOMMENT THE LINES BELOW TO USE OPTIONAL PARAMS
@@ -146,7 +146,7 @@ Gets the nearest factory to supplied coordinates. Calculations are based on the 
 <br>
 <br>
 <pre>
-_build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
+_build/release/linux/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 Application.ensure_all_started(:mongodb)
 {:ok, _} = Database.connect()
 {:ok, coordinates} = Coordinates.constructor(
@@ -177,7 +177,7 @@ Gets a slice of factories from the database
 <br>
 <br>
 <pre>
-_build/prod/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
+_build/release/linux/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
 Application.ensure_all_started(:mongodb)
 {:ok, _} = Database.connect()
 # UNCOMMENT THE LINES BELOW TO USE OPTIONAL PARAMS

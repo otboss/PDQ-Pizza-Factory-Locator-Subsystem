@@ -17,6 +17,7 @@ Run the following commands within the project directory's root using the current
 </ul>
 Commands will require slight modifications for windows systems.
 <br>
+<br>
 Windows Command Sample (Get Configuration):
 <pre>
 _build/release/windows/rel/pizza_factory_locator/bin/pizza_factory_locator eval "{:ok, config} = PizzaFactoryLocator.get_config(); {:ok, config} = config |> Map.from_struct() |> Jason.encode(); IO.puts(config);";

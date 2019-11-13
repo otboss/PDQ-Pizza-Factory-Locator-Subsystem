@@ -15,6 +15,12 @@ Run the following commands within the project directory's root using the current
 	<li>windows</li>
 	<li>macos</li>
 </ul>
+Commands will require slight modifications for windows systems.
+<br>
+Windows Command Sample (Get Configuration):
+<pre>
+_build/release/windows/rel/pizza_factory_locator/bin/pizza_factory_locator eval "{:ok, config} = PizzaFactoryLocator.get_config(); {:ok, config} = config |> Map.from_struct() |> Jason.encode(); IO.puts(config);";
+</pre>
 <h3>1. Set Configuration</h3>
 <br>
 Updates the configuration. Enter the corresponding information of the mongo database server.
@@ -30,7 +36,7 @@ PizzaFactoryLocator.set_config(
   <b><i>mongo_database_port</i></b>,
   <b><i>orders_collection_name</i></b>,
   <b><i>factories_collection_name</i></b>
-)
+);
 ''';
 </pre>
 <h4>Parameters</h4>
@@ -50,9 +56,9 @@ This command reads the configuration from file and prints it to the console.
 <br>
 <pre>
 _build/release/linux/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
-{:ok, config} = PizzaFactoryLocator.get_config()
-{:ok, config} = config |> Map.from_struct() |> Jason.encode()
-IO.puts(config)
+{:ok, config} = PizzaFactoryLocator.get_config();
+{:ok, config} = config |> Map.from_struct() |> Jason.encode();
+IO.puts(config);
 ''';
 </pre>
 <br>
@@ -62,16 +68,16 @@ Saves the coordinates of an order to the database
 <br>
 <pre>
 _build/release/linux/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
-Application.ensure_all_started(:mongodb)
-{:ok, _} = Database.connect()
+Application.ensure_all_started(:mongodb);
+{:ok, _} = Database.connect();
 {:ok, coordinates} = Coordinates.constructor(
   <b><i>x_coordinate</i></b>,
   <b><i>y_coordinate</i></b>
-)
+);
 {:ok, order} = Order.constructor(
   coordinates
-)
-Database.save_order(order)
+);
+Database.save_order(order);
 ''';
 </pre>
 <h4>Parameters</h4>
@@ -86,18 +92,18 @@ Saves a Factory to the database.
 <br>
 <pre>
 _build/release/linux/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
-Application.ensure_all_started(:mongodb)
-{:ok, _} = Database.connect()
+Application.ensure_all_started(:mongodb);
+{:ok, _} = Database.connect();
 {:ok, coordinates} = Coordinates.constructor(
   <b><i>x_coordinate</i></b>,
   <b><i>y_coordinate</i></b>
-)
+);
 {:ok, factory} = Factory.constructor(
   <b><i>factory_name</i></b>,
   coordinates,
   <b><i>phone_number</i></b>
-)
-{:ok, _} = Database.save_factory(factory)
+);
+{:ok, _} = Database.save_factory(factory);
 ''';
 </pre>
 <h4>Parameters</h4>
@@ -114,8 +120,8 @@ Reads all the Pizza Orders from the database and, using the coordinates for each
 <br>
 <pre>
 _build/release/linux/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
-Application.ensure_all_started(:mongodb)
-{:ok, _} = Database.connect()
+Application.ensure_all_started(:mongodb);
+{:ok, _} = Database.connect();
 # UNCOMMENT THE LINES BELOW TO USE OPTIONAL PARAMS
 # {:ok, boundary_start} = Coordinates.constructor(
 #   <b><i>boundary_start_x</i></b>,
@@ -124,7 +130,7 @@ Application.ensure_all_started(:mongodb)
 # {:ok, boundary_stop} = Coordinates.constructor(
 #   <b><i>boundary_stop_x</i></b>,
 #   <b><i>boundary_stop_y</i></b> 
-# )
+# );
 ##################################################
 # REMOVE THE LINES BELOW TO USE OPTIONAL PARAMS
 boundary_start = nil;
@@ -133,9 +139,9 @@ boundary_stop = nil;
 new_location = PizzaFactoryLocator.determine_new_factory_location(
   boundary_start,
   boundary_stop
-)
-{:ok, new_location} = Jason.encode(new_location)
-IO.puts(new_location)
+);
+{:ok, new_location} = Jason.encode(new_location);
+IO.puts(new_location);
 ''';
 </pre>
 <h4>Parameters</h4>
@@ -152,13 +158,13 @@ Gets the nearest factory to supplied coordinates. Calculations are based on the 
 <br>
 <pre>
 _build/release/linux/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
-Application.ensure_all_started(:mongodb)
-{:ok, _} = Database.connect()
+Application.ensure_all_started(:mongodb);
+{:ok, _} = Database.connect();
 {:ok, coordinates} = Coordinates.constructor(
   <b><i>x_coordinate</i></b>,
   <b><i>y_coordinate</i></b>
-)
-result = PizzaFactoryLocator.get_closest_factory(coordinates)
+);
+result = PizzaFactoryLocator.get_closest_factory(coordinates);
 (length(result) > 0 &&
     (
       {:ok, result} =
@@ -166,9 +172,9 @@ result = PizzaFactoryLocator.get_closest_factory(coordinates)
         |> Enum.at(0)
         |> Map.from_struct()
         |> Map.merge(%{:distance => Enum.at(result, 1)})
-        |> Jason.encode()
-      IO.puts(result)
-    )) || IO.puts("null")
+        |> Jason.encode();
+      IO.puts(result);
+    )) || IO.puts("null");
 ''';
 </pre>
 <h4>Parameters</h4>
@@ -183,37 +189,37 @@ Gets a slice of factories from the database
 <br>
 <pre>
 _build/release/linux/rel/pizza_factory_locator/bin/pizza_factory_locator eval '''
-Application.ensure_all_started(:mongodb)
-{:ok, _} = Database.connect()
+Application.ensure_all_started(:mongodb);
+{:ok, _} = Database.connect();
 # UNCOMMENT THE LINES BELOW TO USE OPTIONAL PARAMS
 # {:ok, boundary_start} = Coordinates.constructor(
 #   <b><i>boundary_start_x</i></b>,
 #   <b><i>boundary_start_y</i></b>
-# )
+# );
 # {:ok, boundary_stop} = Coordinates.constructor(
 #   <b><i>boundary_stop_x</i></b>,
 #   <b><i>boundary_stop_y</i></b> 
-# )
+# );
 ##################################################
 # REMOVE LINES BELOW OUT TO USE OPTIONAL PARAMS
-boundary_start = nil
-boundary_stop = nil
+boundary_start = nil;
+boundary_stop = nil;
 ###############################################
 {:ok, factories} = Database.get_factories(
   <b><i>start_index</i></b>,
   <b><i>stop_index</i></b> ,
   <b><i>boundary_start</i></b>,
   <b><i>boundary_stop</i></b>    
-)
+);
 factories = Enum.map(factories, fn factory -> 
   try do
-    Map.from_struct(factory)
+    Map.from_struct(factory);
   rescue
-    _ -> nil
+    _ -> nil;
   end
-end)
-{ok, factory_json} = Jason.encode(factories)
-IO.puts(factory_json)
+end);
+{ok, factory_json} = Jason.encode(factories);
+IO.puts(factory_json);
 ''';
 </pre>
 <h4>Parameters</h4>

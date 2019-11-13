@@ -127,7 +127,7 @@ Application.ensure_all_started(:mongodb);
 # {:ok, boundary_start} = Coordinates.constructor(
 #   <b><i>boundary_start_x</i></b>,
 #   <b><i>boundary_start_y</i></b>
-# )
+# );
 # {:ok, boundary_stop} = Coordinates.constructor(
 #   <b><i>boundary_stop_x</i></b>,
 #   <b><i>boundary_stop_y</i></b> 

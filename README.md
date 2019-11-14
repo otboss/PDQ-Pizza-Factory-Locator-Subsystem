@@ -78,7 +78,7 @@ Application.ensure_all_started(:mongodb);
 {:ok, order} = Order.constructor(
   coordinates
 );
-Database.save_order(order);
+{:ok, _} = Database.save_order(order);
 ''';
 </pre>
 <h4>Parameters</h4>

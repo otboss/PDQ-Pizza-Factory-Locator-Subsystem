@@ -20,7 +20,7 @@ Commands will require slight modifications for windows systems.
 <br>
 Windows Command Sample (Get Configuration):
 <pre>
-_build/release/windows/rel/pizza_factory_locator/bin/pizza_factory_locator eval "{:ok, config} = PizzaFactoryLocator.get_config(); {:ok, config} = config |> Map.from_struct() |> Jason.encode(); IO.puts(config);";
+_build\release\windows\rel\pizza_factory_locator\bin\pizza_factory_locator eval "{:ok, config} = PizzaFactoryLocator.get_config(); {:ok, config} = config |> Map.from_struct() |> Jason.encode(); IO.puts(config);";
 </pre>
 <h3>1. Set Configuration</h3>
 <br>

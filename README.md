@@ -1,6 +1,6 @@
 # PizzaFactoryLocator
 
-This application is the finished product of the Pizza Delivered Quickly Factory Locator Subsystem. This module was written in Elixir and as such has been compiled to Erlang byte code for Windows and Unix-like operating systems. Provided below is the documentation on how to use this module.
+This application is the finished product of the Pizza Delivered Quickly Factory Locator Subsystem. This module was written in Elixir and as such has been compiled to Erlang byte code. Provided below is the documentation on how to use this module.
 <br>
 <br>
 Reference: https://people.uwec.edu/sulzertj/Teaching/is455/Resources/PizzaDeliveryQuickly_Case_Study.pdf

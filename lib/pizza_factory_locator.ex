@@ -100,7 +100,7 @@ defmodule PizzaFactoryLocator do
       end
     end
 
-    thread_chunk_size = (order_cnt / (System.schedulers_online() * 2)) |> ceil()
+    thread_chunk_size = (order_cnt / System.schedulers_online()) |> ceil()
 
     try do
       :ets.new(:buckets_registry, [:named_table, :set, :public])
@@ -118,12 +118,12 @@ defmodule PizzaFactoryLocator do
     end)
 
     memory_coordinators =
-      Enum.reduce(0..(System.schedulers_online() * 2 - 1), [], fn _, acc ->
+      Enum.reduce(0..(System.schedulers_online() - 1), [], fn _, acc ->
         {:ok, mem_coord_pid} = MemoryCoordinator.start_link()
         acc ++ [mem_coord_pid]
       end)
 
-    Enum.each(0..(System.schedulers_online() * 2 - 1), fn thread ->
+    Enum.each(0..(System.schedulers_online() - 1), fn thread ->
       spawn(fn ->
         range_start = thread_chunk_size * thread
         range_stop = thread_chunk_size * thread + thread_chunk_size
@@ -131,7 +131,7 @@ defmodule PizzaFactoryLocator do
 
         range_stop =
           (((range_stop - thread_chunk_size) / thread_chunk_size) |> floor() ==
-             System.schedulers_online() * 2 - 1 && range_stop) || range_stop - 1
+             System.schedulers_online() - 1 && range_stop) || range_stop - 1
 
         Enum.reduce_while(
           range_start..range_stop,
@@ -217,7 +217,7 @@ defmodule PizzaFactoryLocator do
       raise "Invalid origin provided"
 
     {:ok, factory_cnt} = Database.get_factory_count()
-    thread_chunk_size = (factory_cnt / (System.schedulers_online() * 2)) |> ceil()
+    thread_chunk_size = (factory_cnt / System.schedulers_online()) |> ceil()
 
     try do
       :ets.new(:buckets_registry, [:named_table, :set, :public])
@@ -235,12 +235,12 @@ defmodule PizzaFactoryLocator do
     end)
 
     memory_coordinators =
-      Enum.reduce(0..(System.schedulers_online() * 2 - 1), [], fn _, acc ->
+      Enum.reduce(0..(System.schedulers_online() - 1), [], fn _, acc ->
         {:ok, mem_coord_pid} = MemoryCoordinator.start_link()
         acc ++ [mem_coord_pid]
       end)
 
-    Enum.each(0..(System.schedulers_online() * 2 - 1), fn thread ->
+    Enum.each(0..(System.schedulers_online() - 1), fn thread ->
       spawn(fn ->
         range_start = thread_chunk_size * thread
         range_stop = thread_chunk_size * thread + thread_chunk_size
@@ -248,7 +248,7 @@ defmodule PizzaFactoryLocator do
 
         range_stop =
           (((range_stop - thread_chunk_size) / thread_chunk_size) |> floor() ==
-             System.schedulers_online() * 2 - 1 && range_stop) || range_stop - 1
+             System.schedulers_online() - 1 && range_stop) || range_stop - 1
 
         Enum.reduce_while(range_start..range_stop, 0, fn _, acc ->
           if acc <= range_stop,

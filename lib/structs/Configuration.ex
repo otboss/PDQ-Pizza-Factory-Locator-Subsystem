@@ -17,12 +17,14 @@ defmodule Configuration do
         factories_collection
       )
       when is_bitstring(mongo_address) and
-             is_bitstring(mongo_username) and
              is_bitstring(mongo_database) and
              is_bitstring(mongo_password) and
              is_integer(mongo_port) and
              is_bitstring(orders_collection) and
              is_bitstring(factories_collection) do
+    !is_nil(mongo_username) &&
+      (is_bitstring(mongo_username) || raise "invalid mongo username provided")
+
     {:ok,
      %Configuration{
        :mongo_address => mongo_address,

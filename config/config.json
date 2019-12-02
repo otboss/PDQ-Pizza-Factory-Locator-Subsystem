@@ -1,9 +1,9 @@
 {
     "factories_collection": "factories",
-    "mongo_address": "10.45.2.155",
+    "mongo_address": "localhost",
     "mongo_database": "test",
     "mongo_password": "password",
-    "mongo_port": 27040,
+    "mongo_port": 27017,
     "mongo_username": null,
     "orders_collection": "orders"
 }

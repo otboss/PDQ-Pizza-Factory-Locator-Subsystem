@@ -313,17 +313,6 @@ defmodule PizzaFactoryLocator do
     end
   end
 
-  # Limits the amount of running processes in order to prevent the host machine from crashing.
-  # This function checks if the current number of processes exceeds the process_limit and stops
-  # the host machine from spawning new processes by calling itself recursively.
-  # defp throttler do
-  #   (Process.list() |> length()) - @base_process_count >= @process_limit &&
-  #     (
-  #       Process.sleep(300)
-  #       throttler()
-  #     )
-  # end
-
   defp checker do
     old_value = :ets.lookup(:buckets_registry, @old_value) |> Enum.at(0) |> elem(1)
     new_value = :ets.lookup(:buckets_registry, @new_value) |> Enum.at(0) |> elem(1)

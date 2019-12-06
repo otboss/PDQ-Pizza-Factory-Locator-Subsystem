@@ -7,16 +7,25 @@ defmodule Database do
   def connect() do
     {:ok, config} = PizzaFactoryLocator.get_config()
 
-    {:ok, _} =
-      Mongo.start_link(
-        name: :db_connection,
-        hostname: config.mongo_address,
-        database: config.mongo_database,
-        port: config.mongo_port,
-        username: config.mongo_username,
-        password: config.mongo_password,
-        pool_size: 2
-      )
+    (is_nil(config.mongo_username) &&
+       ({:ok, _} =
+          Mongo.start_link(
+            name: :db_connection,
+            hostname: config.mongo_address,
+            database: config.mongo_database,
+            port: config.mongo_port,
+            pool_size: 2
+          ))) ||
+      ({:ok, _} =
+         Mongo.start_link(
+           name: :db_connection,
+           hostname: config.mongo_address,
+           database: config.mongo_database,
+           port: config.mongo_port,
+           username: config.mongo_username,
+           password: config.mongo_password,
+           pool_size: 2
+         ))
   end
 
   @doc """

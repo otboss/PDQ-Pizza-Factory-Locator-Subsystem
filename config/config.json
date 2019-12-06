@@ -4,6 +4,6 @@
     "mongo_database": "test",
     "mongo_password": "password",
     "mongo_port": 27017,
-    "mongo_username": "admin",
+    "mongo_username": null,
     "orders_collection": "orders"
 }

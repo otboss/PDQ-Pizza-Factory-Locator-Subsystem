@@ -1,4 +1,7 @@
 defmodule Configuration do
+  @moduledoc """
+  Provides methods for structuring the JSON contents of the configuration file as a struct
+  """
   defstruct mongo_address: nil,
             mongo_database: nil,
             mongo_username: nil,
@@ -7,6 +10,9 @@ defmodule Configuration do
             orders_collection: nil,
             factories_collection: nil
 
+  @doc """
+  Configuration constructor function, returns Configuration struct
+  """
   def constructor(
         mongo_address,
         mongo_database,

@@ -4,6 +4,9 @@ defmodule Database do
   through this module.
   """
 
+  @doc """
+  Attempts to connect to the Mongo Database using the configuration file
+  """
   def connect() do
     {:ok, config} = PizzaFactoryLocator.get_config()
 
@@ -130,6 +133,10 @@ defmodule Database do
     end
   end
 
+  @doc """
+  Gets a slice of factories from the database. The size of the slice and the region
+  to fetch factories from can be specified as parameters
+  """
   def get_factories(
         start_index,
         stop_index,

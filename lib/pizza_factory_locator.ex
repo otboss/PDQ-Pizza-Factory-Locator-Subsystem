@@ -36,7 +36,7 @@ defmodule PizzaFactoryLocator do
   end
 
   @doc """
-  Writes the configuration from file
+  Writes the configuration to file
   """
   def set_config(
         mongo_address,

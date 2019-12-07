@@ -5,6 +5,6 @@
               {modules,['Elixir.Configuration','Elixir.Coordinates',
                         'Elixir.Database','Elixir.Factory',
                         'Elixir.MemoryCoordinator','Elixir.Order',
-                        'Elixir.PizzaFactoryLocator']},
+                        'Elixir.PizzaFactoryLocator','Elixir.Throttler']},
               {registered,[]},
               {vsn,"0.1.0"}]}.

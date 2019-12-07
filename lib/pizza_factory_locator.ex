@@ -74,11 +74,11 @@ defmodule PizzaFactoryLocator do
   end
 
   @doc """
-  Parses large order and traffic dataset stored in the database to calculate
-  the best location for a new pizza factory using as much of the host machine's
-  resources as possible. A version of this function in the future will account
-  for road traffic during operating hours. Visit the following url for
-  mathematical assistance:
+  Parses large order dataset stored in the database to calculate the best
+  location for a new pizza factory using as much of the host machine's
+  resources as possible. Future implementations of this function in the future can
+  account for road traffic during operating hours for a more accurate result.
+  Visit the following url for mathematical assistance:
   https://stackoverflow.com/questions/6671183/calculate-the-center-point-of-multiple-latitude-longitude-coordinate-pairs
   """
   def determine_new_factory_location(boundary_start \\ nil, boundary_stop \\ nil) do

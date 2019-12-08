@@ -1,8 +1,10 @@
 defmodule MemoryCoordinator do
   @moduledoc """
   Stores state within a process of coordinate results used in the
-  PizzaFactoryLocator.determine_new_factory_location funtion. Using the GenServer Module,
-  This module aids in the parallel processing of pizza orders and factories
+  PizzaFactoryLocator.determine_new_factory_location and
+  PizzaFactoryLocator.get_closest_factory funtions. This module aids
+  in the parallel processing of pizza orders and factories by making use
+  of the GenServer Module.
   """
   use GenServer
 

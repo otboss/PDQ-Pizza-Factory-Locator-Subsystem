@@ -4,7 +4,7 @@ defmodule MemoryCoordinator do
   PizzaFactoryLocator.determine_new_factory_location and
   PizzaFactoryLocator.get_closest_factory funtions. This module aids
   in the parallel processing of pizza orders and factories by making use
-  of the GenServer Module.
+  of the GenServer module.
   """
   use GenServer
 

@@ -45,19 +45,20 @@ defmodule PizzaFactoryLocator do
         mongo_password,
         mongo_port,
         order_collection,
-        factories_collection,
-        latitude_field,
-        longitude_field
+        factories_collection
       )
+      #  is_bitstring(mongo_username) and
       when is_bitstring(mongo_address) and
              is_bitstring(mongo_database) and
-             is_bitstring(mongo_username) and
              is_bitstring(mongo_password) and
              is_integer(mongo_port) and
              is_bitstring(order_collection) and
-             is_bitstring(factories_collection) and
-             is_bitstring(latitude_field) and
-             is_bitstring(longitude_field) do
+             is_bitstring(factories_collection) do
+    if !is_nil(mongo_username) do
+      !is_bitstring(mongo_username) &&
+        raise "invalid username provided. Username type should be either string or nil"
+    end
+
     {:ok, config} =
       Configuration.constructor(
         mongo_address,
